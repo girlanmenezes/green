@@ -2,34 +2,26 @@
 Documentation       Green.
 
 Library             Collections
-Library             DB
-Resource            keywords.robot
+# Library    DB
+Resource            Keywords.robot
 Resource            Requestkeywords.robot
-*** Variables ***    
-${nomePDF}=           nome.pdf        #Definir o nome do arquivo dinamicamente
-${cdPaciente}
-${cdAtendimento}
-${nrConta}
 
+*** Variables ***
+${cdAtendimento}    67139
+${cdPaciente}       ${EMPTY}
+${nrConta}          7660
 
 *** Tasks ***
+# rcc run --task "Run RPA Green"
 RPA Green
-    ${results}=        Get Dados    #Busca os dados no banco
-        
-        FOR  ${robot}     IN    ${results}
-        #VALIDAR ESSE DE/PARA
-        ${cdPaciente} = robot[1]
-        ${cdAtendimento}= robot[2]
-        ${nrConta}= robot[6]
-        
-        #Logar e acessar a tela - Foi utilizado o projeto de automação existente
-        Logar e Acessar a tela 
+    # Download    ${PDF_URL}
+    # Logar e acessar a tela - Foi utilizado o projeto de automação existente
+    Logar e Acessar a tela
 
-        #Realiza o download do relatorio
-        Download do relatorio    ${cdPaciente}    ${cdAtendimento}    ${nrConta}
+    #Realiza o download do relatorio
+    # Download do relatorio    ${cdPaciente}    ${cdAtendimento}    ${nrConta}
+    Download do relatorio    ${cdAtendimento}    ${cdPaciente}    ${nrConta}    ${CURDIR}\\resources\\PDF
 
-        #Autentica serviço e realiza a requsição
-        Integração WebService    ${nomePDF}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}
-        END
-
-
+    #Autentica serviço e realiza a requsição
+    # Integração WebService    ${nomePDF}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}
+    # Integração WebService    ${cdPaciente}    ${cdAtendimento}    ${nrConta}

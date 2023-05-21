@@ -3,5 +3,3 @@ import uuid
 
 TODAY = datetime.now()
 ID_NAME = str(uuid.uuid4())
-
-

@@ -15,4 +15,6 @@ temp/
 testrun/*
 .~lock*
 *.pkl
+*.pdf
+*.csv
 chromedriver.exe
