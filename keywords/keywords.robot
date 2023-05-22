@@ -5,10 +5,12 @@ Library             Collections
 Library             String
 Library             DateTime
 Library             RPA.Browser.Selenium
-# Library             RPA.Excel.Files
+# Library    RPA.Excel.Files
 Library             RPA.Tables
 Library             RPA.HTTP
-Library    OperatingSystem
+Library             RPA.FileSystem
+Library             OperatingSystem
+
 
 *** Variables ***
 #Transferir esses itens para um page
@@ -49,10 +51,12 @@ ${IdBtnRelatorio}                   id=btnImprimir
 
 # Tela de Impressão do relatório
 ${IdCboSaidaRelatorio}              id=tpSaida_ac
-# ${XpathBtnImprimir}                 xpath=//button[@data-name='comum_btnImprimir']
+# ${XpathBtnImprimir}    xpath=//button[@data-name='comum_btnImprimir']
 ${XpathBtnImprimir}                 xpath=//span[contains(text(), 'Imprimir')]
-${XpathMsgInfo}                     xpath=//ul[@class="dropdown-menu workspace-notifications-menu"]/li[@class='notification-info']
+${XpathMsgInfo}
+...    xpath=//ul[@class="dropdown-menu workspace-notifications-menu"]/li[@class='notification-info']
 ${XpathMsgInfoBtnSim}               xpath=//li[@class='notification-buttons']/button[contains(text(),'Sim')]
+
 
 *** Keywords ***
 Logar e Acessar a tela
@@ -71,7 +75,7 @@ Click no Item
     Sleep    1
 
 Download do relatorio
-    [Arguments]    ${cdAtendimento}    ${cdPaciente}    ${nrConta}    ${outputReport}
+    [Arguments]    ${cdAtendimento}    ${cdPaciente}    ${nrConta}    ${pathMain}
     # [Arguments]    ${cdAtendimento}    ${nrConta}    ${outputReport}
 
     # Pesquisa número de atendimento
@@ -89,15 +93,13 @@ Download do relatorio
 
     # Imprime relatório
     Click Element    ${IdBtnRelatorio}
-    Seleciona Item Combobox    ${IdCboSaidaRelatorio}     Tela
+    Seleciona Item Combobox    ${IdCboSaidaRelatorio}    Tela
     Click Element    ${XpathBtnImprimir}
 
     # Verifica se alguma mensagem de informação foi apresentada
     ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    3
 
-    IF    ${msgInfoVisible} == ${True}
-        Click Element    ${XpathMsgInfoBtnSim}
-    END
+    IF    ${msgInfoVisible} == ${True}    Click Element    ${XpathMsgInfoBtnSim}
 
     # Aguarda a aba do navegador com o relatório ser carregada
     ${countTabs}    Set Variable    ${1}
@@ -111,15 +113,26 @@ Download do relatorio
         # Log To Console    Number of Tabs: ${countTabs}
 
         # Realiza 30 tentativas durante pouco mais de 30 segundos
-        IF    ${count} == ${30}
-            Fail    Guia do relatório não foi carregada
-        END
+        IF    ${count} == ${30}    Fail    Guia do relatório não foi carregada
     END
 
     Switch Window    NEW    # Seleciona aba do relatório
     ${pdfUrl}    Get Location    # Pega url do relatório pdf
 
-    Download    ${pdfUrl}    ${outputReport}    # Realiza download do relatório
+    # Remove arquivo antigo
+    ${files}    RPA.FileSystem.List Files In Directory    ${pathMain}\\resources\\PDF
+    ${fileCount}    Get Length    ${files}
+
+    IF    ${fileCount} == ${1}
+        ${files}    Convert To String    ${files}
+        ${attrFile}    Split String    ${files}    ,
+        ${fileName}    Replace String    ${attrFile}[1]    name='    ${EMPTY}
+        ${fileName}    Replace String    ${fileName}    '    ${EMPTY}
+        ${fileName}    Set Variable    ${fileName.strip()}
+        OperatingSystem.Remove File    ${pathMain}\\resources\\PDF\\${fileName}
+    END
+
+    Download    ${pdfUrl}    ${pathMain}\\resources\\PDF    # Realiza download do relatório
 
     # Renomei arquivo
     ${date}    Get Current Date    result_format=%d%m%Y%H%M%S
@@ -127,18 +140,7 @@ Download do relatorio
     ${lastPosition}    Get Length    ${fileName}
     ${lastPosition}    Evaluate    ${lastPosition}-1
     ${newFileName}    Replace String    ${fileName}[${lastPosition}]    .pdf    _${date}.pdf
-    Move File    ${outputReport}\\${fileName}[${lastPosition}]    ${outputReport}\\${newFileName}
-
-Gera Log Envio CSV
-    [Arguments]    ${fileName}    ${data}
-
-    ${file_exists}    Run Keyword and Return Status    File Should Exist    ${fileName}
-
-    IF  ${file_exists} == ${false}
-        ${files}    Create table    ${data}
-    ELSE
-        Add Table Row    ${data}
-    END 
+    RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
 
 Acessar a tela pela busca |${tela}||${nomeItem}|
     #${printscreen}

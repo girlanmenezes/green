@@ -7,6 +7,7 @@ Resource            Keywords.robot
 Resource            Requestkeywords.robot
 
 *** Variables ***
+${pathMain}         ${CURDIR}    # Path raiz do projeto
 ${cdAtendimento}    67139
 ${cdPaciente}       ${EMPTY}
 ${nrConta}          7660
@@ -20,8 +21,8 @@ RPA Green
 
     #Realiza o download do relatorio
     # Download do relatorio    ${cdPaciente}    ${cdAtendimento}    ${nrConta}
-    Download do relatorio    ${cdAtendimento}    ${cdPaciente}    ${nrConta}    ${CURDIR}\\resources\\PDF
+    Download do relatorio    ${cdAtendimento}    ${cdPaciente}    ${nrConta}    ${CURDIR}
 
     #Autentica serviço e realiza a requsição
     # Integração WebService    ${nomePDF}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}
-    # Integração WebService    ${cdPaciente}    ${cdAtendimento}    ${nrConta}
+    Integração WebService    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
