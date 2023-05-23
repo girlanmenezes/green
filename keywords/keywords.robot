@@ -75,7 +75,7 @@ Click no Item
     Sleep    1
 
 Download do relatorio
-    [Arguments]    ${cdAtendimento}    ${cdPaciente}    ${nrConta}    ${pathMain}
+    [Arguments]    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
     # [Arguments]    ${cdAtendimento}    ${nrConta}    ${outputReport}
 
     # Pesquisa número de atendimento
@@ -84,8 +84,9 @@ Download do relatorio
     Click Element    ${XpathBtnExecutar}
 
     # Seleciona conta
-    Sleep    5
+    Sleep    10
     Wait Until Element Is Enabled    ${XpathTblContasCell1Col1}    120
+    Sleep    1
     ${nrContaSistema}    RPA.Browser.Selenium.Get Text    ${XpathTblContasCell1Col1}
     Should Be Equal As Strings    ${nrConta}    ${nrContaSistema}
     Click Element    ${XpathTblContasCell1Col1}
@@ -110,10 +111,9 @@ Download do relatorio
         ${tabs}    Get Window Titles
         ${countTabs}    Get Length    ${tabs}
         ${count}    Evaluate    ${count} + 1
-        # Log To Console    Number of Tabs: ${countTabs}
 
         # Realiza 30 tentativas durante pouco mais de 30 segundos
-        IF    ${count} == ${30}    Fail    Guia do relatório não foi carregada
+        IF    ${count} == ${120}    Fail    Guia do relatório não foi carregada
     END
 
     Switch Window    NEW    # Seleciona aba do relatório
@@ -134,12 +134,13 @@ Download do relatorio
 
     Download    ${pdfUrl}    ${pathMain}\\resources\\PDF    # Realiza download do relatório
 
-    # Renomei arquivo
+    # Renomeio o arquivo
     ${date}    Get Current Date    result_format=%d%m%Y%H%M%S
     ${fileName}    Split String    ${pdfUrl}    /
     ${lastPosition}    Get Length    ${fileName}
     ${lastPosition}    Evaluate    ${lastPosition}-1
-    ${newFileName}    Replace String    ${fileName}[${lastPosition}]    .pdf    _${date}.pdf
+    # ${newFileName}    Replace String    ${fileName}[${lastPosition}]    .pdf    _${date}.pdf
+    ${newFileName}    Set Variable    ${date}.pdf
     RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
 
 Acessar a tela pela busca |${tela}||${nomeItem}|
