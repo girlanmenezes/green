@@ -37,6 +37,7 @@ ${options}
 ${dadosLoginUsuarioQaRelease}       ANDRE.VASCONCELOS
 ${dadosLoginSenhaQaRelease}         12345678
 ${dadosLoginEmpresaQaRelease}       5 - HOSPITAL MV - MATRIZ
+${xpathTelaLicensa}                 xpath=//input[contains(@value, 'continuar')]
 ${IdIframe}
 ...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
 ${IdIframePagu}                     id=child_PAGU.HTML
@@ -238,8 +239,15 @@ Realiza Login
     Select From List By Label    ${PageIdSelectEmpresa}    ${empresa}
     # Capture Page Screenshot
     Click Button    ${PageIdBtnLogin}
+    
+    ${status}    Run Keyword And Return Status    Wait Until Element Is Visible    ${xpathTelaLicensa}    10
+    IF    ${status} == ${True}
+        Click Element    ${xpathTelaLicensa} 
+    END
+
     Wait Until Element Is Visible    ${PageIClassListMenu}    timeout=60    error=Erro ao efetuar o login
     Sleep    2
+
 
 Nova sessao
     ${url}    Set Variable If    %{DRY_RUN=${True}} == ${True}    ${url}    ${QA_ENVIROMENT}
