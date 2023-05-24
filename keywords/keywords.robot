@@ -142,7 +142,8 @@ Download do relatorio
     ${lastPosition}    Evaluate    ${lastPosition}-1
     # ${newFileName}    Replace String    ${fileName}[${lastPosition}]    .pdf    _${date}.pdf
     ${newFileName}    Set Variable    ${date}.pdf
-    RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
+    # RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
+    RPA.FileSystem.Move File    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${fileName}[${lastPosition}]    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${newFileName}
 
 Acessar a tela pela busca |${tela}||${nomeItem}|
     #${printscreen}

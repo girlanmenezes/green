@@ -90,10 +90,15 @@ Page
     ${validateStatus}    Run Keyword And Return Status    Request Should Be Successful
     ${validateCode}    Run Keyword And Return Status    Status Should Be    201
 
+    # IF    (${validateStatus} and ${validateCode}) == ${True}
+    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
+    # ELSE
+    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False} 
+    # END
     IF    (${validateStatus} and ${validateCode}) == ${True}
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
+        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV    ${True}
     ELSE
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False} 
+        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV   ${False} 
     END
 
     RETURN    ${RESPONSE}
