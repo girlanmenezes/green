@@ -134,6 +134,7 @@ Download do relatorio
     END
 
     Download    ${pdfUrl}    ${pathMain}\\resources\\PDF    # Realiza download do relatório
+    Sleep    5
 
     # Renomeio o arquivo
     ${date}    Get Current Date    result_format=%d%m%Y%H%M%S
@@ -142,8 +143,13 @@ Download do relatorio
     ${lastPosition}    Evaluate    ${lastPosition}-1
     # ${newFileName}    Replace String    ${fileName}[${lastPosition}]    .pdf    _${date}.pdf
     ${newFileName}    Set Variable    ${date}.pdf
-    # RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
-    RPA.FileSystem.Move File    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${fileName}[${lastPosition}]    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${newFileName}
+
+    Log    Arquivo baixado: ${fileName}[${lastPosition}]
+
+    RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
+    # RPA.FileSystem.Move File    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${fileName}[${lastPosition}]    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${newFileName}
+    
+    Log    Arquivo renomeado: ${newFileName}
 
 Acessar a tela pela busca |${tela}||${nomeItem}|
     #${printscreen}

@@ -90,16 +90,19 @@ Page
     ${validateStatus}    Run Keyword And Return Status    Request Should Be Successful
     ${validateCode}    Run Keyword And Return Status    Status Should Be    201
 
-    # IF    (${validateStatus} and ${validateCode}) == ${True}
-    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
-    # ELSE
-    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False} 
-    # END
     IF    (${validateStatus} and ${validateCode}) == ${True}
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV    ${True}
+        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
     ELSE
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV   ${False} 
+        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False}
     END
+
+    Log    
+
+    # IF    (${validateStatus} and ${validateCode}) == ${True}
+    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV    ${True}
+    # ELSE
+    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV   ${False} 
+    # END
 
     RETURN    ${RESPONSE}
 
@@ -114,43 +117,7 @@ Integração WebService
     ${token}    Connection
     # Cria document JSON
     ${document}    Document    ${token}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
-
-    # # Verifica se existe apenas um arquivo na pasta
-    # ${files}    RPA.FileSystem.List Files In Directory    ${pathMain}\\resources\\PDF
-    # ${fileCount}    Get Length    ${files}
-
-    # IF    ${fileCount} != ${1}    Fail    Arquivo PDF não foi localizado     # Metodo CSV
-
-    # ${files}    Convert To String    ${files}
-    # ${attrFile}    Split String    ${files}    ,
-    # ${fileName}    Replace String    ${attrFile}[1]    name='    ${EMPTY}
-    # ${fileName}    Replace String    ${fileName}    '    ${EMPTY}
-    # ${fileName}    Set Variable    ${fileName.strip()}
-
-    # ${date}    Get Current Date    result_format=%d-%m-%Y-%H:%M:%S
-    
     # Obtem nome do arquivo PDF
     ${fileName}    Pdf.Get File Name    ${pathMain}\\resources\\PDF
-
     # Envia arquivo web service
     ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
-
-    # # Cria novo registo
-    # ${csvData}    Convert To String
-    # ...    ${cdAtendimento},${cdPaciente},${nrConta},${fileName},${date},sucesso,Envia do com sucesso
-
-    # # Verifica se já existe o arquivo RELATORIO_ENVIOS.csv
-    # ${createdCsv}    Run Keyword And Return Status
-    # ...    File Should Exist
-    # ...    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
-
-    # # Cria arquivo se não existir
-    # IF    ${createdCsv} != ${True}
-    #     RPA.FileSystem.Create File    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
-    #     RPA.FileSystem.Append To File
-    #     ...    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
-    #     ...    cod_atendimento,cod_paciente,nr_conta,arquivo,data_envio,status_envio,msg_envio\n
-    # END
-
-    # # Adiciona novo registro ao arquivo
-    # RPA.FileSystem.Append To File    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv    ${csvData}\n
