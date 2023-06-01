@@ -30,18 +30,20 @@ ${btnExecutar}                      xpath=//li[@id='toolbar']//li[@id='tb-execut
 ${so}                               windows
 ${browser}                          chrome
 ${ambiente}                         qarelease
-${url}                              https://qarelease.mv.com.br/soul-mv/
+${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
 
 ${options}
-...                                 add_argument("--disable-dev-shm-usage"); add_argument("--no-sandbox"); add_argument("--start-maximized")
-${dadosLoginUsuarioQaRelease}       ANDRE.VASCONCELOS
-${dadosLoginSenhaQaRelease}         12345678
-${dadosLoginEmpresaQaRelease}       5 - HOSPITAL MV - MATRIZ
+...                                 binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe"; add_argument("--disable-dev-shm-usage"); add_argument("--no-sandbox"); add_argument("--start-maximized"); add_argument("headless");
+${dadosLoginUsuarioQaRelease}       TIRPAWATI
+${dadosLoginSenhaQaRelease}         TIRPAWATI
+${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
 ${IdIframe}
 ...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
 ${IdIframePagu}                     id=child_PAGU.HTML
 @{novaListaItensMenu}
 @{validaItemExistente}
+
+
 
 # Elementos tela M_LAN_HOS - Download relatorio
 ${XpathTxtAtendimento}              xpath=//*[@id='inp:cdAtendimento']
@@ -75,7 +77,7 @@ Click no Item
     Sleep    1
 
 Download do relatorio
-    [Arguments]    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
     # [Arguments]    ${cdAtendimento}    ${nrConta}    ${outputReport}
 
     # Pesquisa número de atendimento
@@ -252,7 +254,8 @@ Nova sessao
     Add Cookie    las-uuid    2a603126-6068-4cfb-a00f-b79d6a7adc6d
     Add Cookie    las-host    http://127.0.0.1:32768
     Maximize Browser Window
-    # Sleep    10
+    Sleep    30
+    Log     ABERTURA DO NAVEGADOR
 
     Realiza Login    ${dadosLoginUsuarioQaRelease}    ${dadosLoginSenhaQaRelease}    ${dadosLoginEmpresaQaRelease}
 

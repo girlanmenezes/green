@@ -37,12 +37,11 @@ Connection
     RETURN    ${token}
 
 Document
-    [Arguments]    ${token}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    [Arguments]    ${token}      ${cdAtendimento}    ${nrConta}    ${pathMain}
 
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\document.json
     ${name}    Set Variable    ${ID_NAME}
-    ${body_json}    Update value to JSON    ${body_json}    $..name    ${name}
-    ${body_json}    Update value to JSON    ${body_json}    $..field1    ${cdPaciente}
+    ${body_json}    Update value to JSON    ${body_json}    $..name      ${name}
     ${body_json}    Update value to JSON    ${body_json}    $..field2    ${cdAtendimento}
     ${body_json}    Update value to JSON    ${body_json}    $..field3    ${nrConta}
 
@@ -91,24 +90,23 @@ Page
     ${validateCode}    Run Keyword And Return Status    Status Should Be    201
 
     IF    (${validateStatus} and ${validateCode}) == ${True}
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
+        Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
     ELSE
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False} 
+        Log CSV    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False} 
     END
 
     RETURN    ${RESPONSE}
 
 Integração WebService
-    [Arguments]    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
-    Set Suite Variable    ${cdPaciente}    ${cdPaciente}
     Set Suite Variable    ${cdAtendimento}    ${cdAtendimento}
     Set Suite Variable    ${nrConta}    ${nrConta}
 
     # Conecta web service
     ${token}    Connection
     # Cria document JSON
-    ${document}    Document    ${token}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    ${document}    Document    ${token}    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
     # # Verifica se existe apenas um arquivo na pasta
     # ${files}    RPA.FileSystem.List Files In Directory    ${pathMain}\\resources\\PDF
@@ -132,7 +130,7 @@ Integração WebService
 
     # # Cria novo registo
     # ${csvData}    Convert To String
-    # ...    ${cdAtendimento},${cdPaciente},${nrConta},${fileName},${date},sucesso,Envia do com sucesso
+    # ...    ${cdAtendimento},${nrConta},${fileName},${date},sucesso,Envia do com sucesso
 
     # # Verifica se já existe o arquivo RELATORIO_ENVIOS.csv
     # ${createdCsv}    Run Keyword And Return Status
