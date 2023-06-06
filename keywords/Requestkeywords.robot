@@ -9,6 +9,7 @@ Library             RPA.Windows
 Library             OperatingSystem
 Library             DateTime
 Variables           variables.py
+Resource            Keywords.robot
 
 Resource            Pdf.robot
 Resource            LogCsv.robot
@@ -20,6 +21,7 @@ ${URL_GREEN}            https://portal-drp.green-sempapel.com.br/integrationserv
 
 *** Keywords ***
 Connection
+    Run Keyword And Ignore Error    DELETE On Session
     Create Session    token    ${URL_CONNECTION}
     ${headers}    Create Dictionary
     ...    X-IntegrationServer-Username=WATI
@@ -100,50 +102,56 @@ Page
 Integração WebService
     [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
-    Set Suite Variable    ${cdAtendimento}    ${cdAtendimento}
-    Set Suite Variable    ${nrConta}    ${nrConta}
+    TRY
+        Set Suite Variable    ${cdAtendimento}    ${cdAtendimento}
+        Set Suite Variable    ${nrConta}    ${nrConta}
 
-    # Conecta web service
-    ${token}    Connection
-    # Cria document JSON
-    ${document}    Document    ${token}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+        # Conecta web service
+        ${token}    Connection
+        # Cria document JSON
+        ${document}    Document    ${token}    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
-    # # Verifica se existe apenas um arquivo na pasta
-    # ${files}    RPA.FileSystem.List Files In Directory    ${pathMain}\\resources\\PDF
-    # ${fileCount}    Get Length    ${files}
+        # # Verifica se existe apenas um arquivo na pasta
+        # ${files}    RPA.FileSystem.List Files In Directory    ${pathMain}\\resources\\PDF
+        # ${fileCount}    Get Length    ${files}
 
-    # IF    ${fileCount} != ${1}    Fail    Arquivo PDF não foi localizado     # Metodo CSV
+        # IF    ${fileCount} != ${1}    Fail    Arquivo PDF não foi localizado     # Metodo CSV
 
-    # ${files}    Convert To String    ${files}
-    # ${attrFile}    Split String    ${files}    ,
-    # ${fileName}    Replace String    ${attrFile}[1]    name='    ${EMPTY}
-    # ${fileName}    Replace String    ${fileName}    '    ${EMPTY}
-    # ${fileName}    Set Variable    ${fileName.strip()}
+        # ${files}    Convert To String    ${files}
+        # ${attrFile}    Split String    ${files}    ,
+        # ${fileName}    Replace String    ${attrFile}[1]    name='    ${EMPTY}
+        # ${fileName}    Replace String    ${fileName}    '    ${EMPTY}
+        # ${fileName}    Set Variable    ${fileName.strip()}
 
-    # ${date}    Get Current Date    result_format=%d-%m-%Y-%H:%M:%S
-    
-    # Obtem nome do arquivo PDF
-    ${fileName}    Pdf.Get File Name    ${pathMain}\\resources\\PDF
+        ${date}    Get Current Date    result_format=%d-%m-%Y-%H:%M:%S
 
-    # Envia arquivo web service
-    ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
+        # Obtem nome do arquivo PDF
+        ${fileName}    Pdf.Get File Name    ${pathMain}\\resources\\PDF
 
-    # # Cria novo registo
-    # ${csvData}    Convert To String
-    # ...    ${cdAtendimento},${nrConta},${fileName},${date},sucesso,Envia do com sucesso
+        # Envia arquivo web service
+        ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
 
-    # # Verifica se já existe o arquivo RELATORIO_ENVIOS.csv
-    # ${createdCsv}    Run Keyword And Return Status
-    # ...    File Should Exist
-    # ...    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
+        # Cria novo registo
+        #${csvData}    Convert To String
+        #...    ${cdAtendimento},${nrConta},${fileName},${date},sucesso,Envia do com sucesso
 
-    # # Cria arquivo se não existir
-    # IF    ${createdCsv} != ${True}
-    #     RPA.FileSystem.Create File    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
-    #     RPA.FileSystem.Append To File
-    #     ...    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
-    #     ...    cod_atendimento,cod_paciente,nr_conta,arquivo,data_envio,status_envio,msg_envio\n
-    # END
+        # Verifica se já existe o arquivo RELATORIO_ENVIOS.csv
+        #${createdCsv}    Run Keyword And Return Status
+        #...    File Should Exist
+        #...    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
 
-    # # Adiciona novo registro ao arquivo
-    # RPA.FileSystem.Append To File    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv    ${csvData}\n
+        # Cria arquivo se não existir
+        #IF    ${createdCsv} != ${True}
+        #    RPA.FileSystem.Create File    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
+        #    RPA.FileSystem.Append To File
+        #    ...    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv
+        #    ...    cod_atendimento,cod_paciente,nr_conta,arquivo,data_envio,status_envio,msg_envio\n
+        #END
+
+        # # Adiciona novo registro ao arquivo
+        #RPA.FileSystem.Append To File    ${pathMain}\\resources\\CSV\\RELATORIO_ENVIOS.csv    ${csvData}\n
+    EXCEPT
+        Log     falha ao integrar Green
+    END
+
+

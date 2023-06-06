@@ -13,13 +13,13 @@ Log CSV
     # Verifica se já existe o arquivo RELATORIO_ENVIOS.csv
     ${createdCsv}    Run Keyword And Return Status
     ...    File Should Exist
-    ...    ${pathCsv}\\RELATORIO_ENVIOS.csv
+    ...    ${pathCsv}\\resources\\CSV\\RELATORIO_ENVIOS.csv
 
     # Cria arquivo se não existir
     IF    ${createdCsv} != ${True}
-        RPA.FileSystem.Create File    ${pathCsv}\\RELATORIO_ENVIOS.csv
+        RPA.FileSystem.Create File    ${pathCsv}\\resources\\CSV\\RELATORIO_ENVIOS.csv
         RPA.FileSystem.Append To File
-        ...    ${pathCsv}\\RELATORIO_ENVIOS.csv
+        ...    ${pathCsv}\\resources\\CSV\\RELATORIO_ENVIOS.csv
         ...    cod_paciente,cod_atendimento,nr_conta,arquivo,data_envio,status_envio,msg_envio\n
     END
 
@@ -31,4 +31,22 @@ Log CSV
     END
 
     # Adiciona novo registro ao arquivo
-    RPA.FileSystem.Append To File    ${pathCsv}\\RELATORIO_ENVIOS.csv   ${csvData}\n
+    RPA.FileSystem.Append To File    ${pathCsv}\\resources\\CSV\\RELATORIO_ENVIOS.csv   ${csvData}\n
+
+
+ReadS CSV file
+    [Arguments]    ${pathCsv}    ${atendimento}
+    ${csv}=    Get File    ${pathCsv}\\resources\\CSV\\RELATORIO_ENVIOS.csv
+    @{read}=    Create List    ${csv}
+    Log    @{read}
+    @{lines}=    Split To Lines    @{read}    1
+
+    FOR    ${line_csv}    IN    @{lines}
+        #Log    @{lines}
+        Log    ${line_csv}
+        Log    @{lines}[1]
+        Log    @{line_csv}[1]
+
+        ${EXIST}    Run Keyword And Return Status    Should Be Equal    ${line_csv}[0]    ${atendimento}
+        Log To Console    Atendimento já integrado ${line_csv}[0]
+    END

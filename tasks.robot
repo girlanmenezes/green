@@ -2,6 +2,7 @@
 Documentation       Green.
 
 Library             Collections
+Library             ReadCSV
 Library             DB
 Resource            Keywords.robot
 Resource            Requestkeywords.robot
@@ -15,30 +16,45 @@ ${pathMain}         ${CURDIR}    # Path raiz do projeto
 *** Tasks ***
 RPA Green
     ${results}        Get Dados Banco    #Busca os dados no banco
-    Log     ${results}
 
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
     END
 
+  
+    
 
-    Logar e Acessar a tela 
+    #Abrir navegador e acessar a tela
+    #Logar e Acessar a tela 
         
-    FOR  ${robot}     IN    ${results}
-        ${cdAtendimento}= robot[4]
-        ${nrConta}= robot[2]
+    FOR  ${robot}     IN    @{results}
+        #Pegando numero da conta e atendimento
+        ${cdAtendimento}    Set Variable    ${robot}[3]
+        ${nrConta}    Set Variable    ${robot}[1] 
+
+        IF    ${nrConta}==None    CONTINUE
+
+        Log    ${nrConta}
+        Log    ${cdAtendimento}
+
+        ${statusDownload}=     read csv file    ${pathMain}    ${cdAtendimento}
+        Log    ${statusDownload}
+        
+        IF    ${statusDownload}    CONTINUE
+
+
 
         #Realiza o download do relatorio
-        Download do relatorio   ${cdAtendimento}    ${nrConta}    ${pathMain}
+        ${statusDownload}=    Download do relatorio   ${cdAtendimento}    ${nrConta}    ${pathMain}
+        Log    ${statusDownload}
 
-        #Autentica serviço e realiza a requsição
-        Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}
+        IF    "${statusDownload}"=="OK"
+            Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}
+            Pagina Relatorio
+        END
+
+        
+
     END
     
     # rcc run --task "Run RPA Green"
-    # Logar e acessar a tela - Foi utilizado o projeto de automação existente
-    # Logar e Acessar a tela
-    # Realiza o download do relatorio
-    # Download do relatorio    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
-    #    Autentica serviço e realiza a requisição
-    # Integração WebService    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
