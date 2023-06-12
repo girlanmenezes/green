@@ -27,32 +27,43 @@ ${PageIClassListMenu}               class=nav
 ${imagens}                          ${CURDIR}\\4-images
 ${arquivos_upload}                  ${CURDIR}\\6-files
 ${classLasDisplay}                  class=las-display
-
+${las}                               @las
 ${btnExecutar}                      xpath=//li[@id='toolbar']//li[@id='tb-execute']//a
 ${so}                               windows
 ${browser}                          chrome
 ${ambiente}                         qarelease
-${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
+#${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
+${url}                               http://trnmvcr2.adhosp.com.br:82/mvautenticador-cas/login
+${nrContaSistema}
+#Portable
+#${options}                           binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
+#centos
+#${options}                           binary_location="C:\\CentBrowser\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
+#Chrome
+${options}                           binary_location="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
 
-${options}                           binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
-#${options}                          binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe";
-#...                                 add_argument("--disable-dev-shm-usage");
-#...                                 add_argument("--no-sandbox");
-#...                                 add_argument("--start-maximized");
-#...                                 add_argument("headlesschrome");
+${dadosLoginUsuarioQaRelease}       RPA_CONTA
+${dadosLoginSenhaQaRelease}         12345678
 
+#${dadosLoginUsuarioQaRelease}       TIRPAWATI
+#${dadosLoginSenhaQaRelease}         TIRPAWATI
 
-${dadosLoginUsuarioQaRelease}       TIRPAWATI
-${dadosLoginSenhaQaRelease}         TIRPAWATI
-${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
+#${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
+
+${dadosLoginEmpresaQaRelease}       TREINAMENTO - HOSPITAL NOVE DE JULHO..
 #child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
-${IdIframe}                            id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
-#${IdIframe}        
+
+#Portable
+#${IdIframe}                            id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
+#Chrome
+${IdIframe}                              id=child_APOIO.HTML,ATEND.HTML,CONEC.HTML,CONTR.HTML,DIAGN.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PAGU.HTML,SUPRI.HTML   
+
 #...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
+#...                                 id=child_APOIO.HTML,ATEND.HTML,CONEC.HTML,CONTR.HTML,DIAGN.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PAGU.HTML,SUPRI.HTML   
 ${IdIframePagu}                     id=child_PAGU.HTML
 @{novaListaItensMenu}
 @{validaItemExistente}
-
+${EMPTY}
 
 
 # Elementos tela M_LAN_HOS - Download relatorio
@@ -76,13 +87,16 @@ ${Notifications}                xpath=//*[@id='notifications']
 
 *** Keywords ***
 Logar e Acessar a tela
-    Kill Process    chrome.exe
-    Kill Process    chrome-custom.exe
+    TRY
+        Kill Process    chrome.exe
+        Kill Process    chrome-custom.exe
 
-    Sleep     10s
-    Nova sessao
-    Acessar a tela pela busca |M_LAN_HOS||Conta do Atendimento|
-
+        Sleep     5s
+        Nova sessao
+        Acessar a tela pela busca |M_LAN_HOS||Conta do Atendimento|
+    EXCEPT
+        Skip    Sistema Indisponivel
+    END
 Executar a pesquisa
     Sleep    2
     Click no Item    ${btnExecutar}
@@ -97,28 +111,11 @@ Click no Item
 Download do relatorio
     [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
     # [Arguments]    ${cdAtendimento}    ${nrConta}    ${outputReport}
-    Sleep     5s
-    # Valida Pesquisa Atendimento
-    Pesquisa Atendimento    ${cdAtendimento}  
     TRY
-        Sleep     5s
-        Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
-        Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
-        Click Element    ${XpathBtnExecutar}    
-     
-        # Seleciona conta
-        Sleep    10
-        Wait Until Element Is Enabled    ${XpathTblContasCell1Col1}    120
-        Sleep    1
-        ${nrContaSistema}    RPA.Browser.Selenium.Get Text    ${XpathTblContasCell1Col1}
-        Should Be Equal As Strings    ${nrConta}    ${nrContaSistema}
-        Click Element    ${XpathTblContasCell1Col1}
-        Sleep    1
-
         # Imprime relatório
         Click Element    ${IdBtnRelatorio}
 
-        ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    3
+        ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
 
         IF    ${msgInfoVisible} == ${True}    
             Run Keyword And Ignore Error    Click Element    ${XpathMsgInfoBtnSim}
@@ -131,7 +128,7 @@ Download do relatorio
         Sleep    2
 
         # Verifica se alguma mensagem de informação foi apresentada
-        ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    3
+        ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
 
         IF    ${msgInfoVisible} == ${True}    
             Run Keyword And Ignore Error    Click Element    ${XpathMsgInfoBtnSim}
@@ -186,7 +183,7 @@ Download do relatorio
         RETURN    OK
     EXCEPT
         Log    Erro ao realizar download do relatorio Atendimento: ${cdAtendimento}
-        Logar e Acessar a tela  
+        RETURN    FAILD
     END
 
 Acessar a tela pela busca |${tela}||${nomeItem}|
@@ -196,14 +193,15 @@ Acessar a tela pela busca |${tela}||${nomeItem}|
     Input Text    ${HomeXpathInputPesquisa}    ${tela}
     Click Elemento por titulo    ${nomeItem}
     Sleep    10s
-
-    Seleciona frame    ${IdIframe}    180
-    Wait Until Element Is Visible    ${classLasDisplay}    120
     Unselect Frame
-
-    Press keys    None    TAB
-    Press keys    None    ENTER
-
+    
+    IF    "${las}" == "@las"
+        Seleciona frame    ${IdIframe}    180
+        Wait Until Element Is Visible    ${classLasDisplay}    120
+        Unselect Frame
+        Press keys    None    TAB
+        Press keys    None    ENTER
+    END
     Seleciona frame    ${IdIframe}    180
 
 Click Elemento por titulo
@@ -315,7 +313,7 @@ Nova sessao
     Add Cookie    las-host    http://127.0.0.1:32768
     #Add Cookie    las-host    http://127.0.0.1:32785
     Maximize Browser Window
-    Sleep    30
+    Sleep    5s
     Log     ABERTURA DO NAVEGADOR
 
     Realiza Login    ${dadosLoginUsuarioQaRelease}    ${dadosLoginSenhaQaRelease}    ${dadosLoginEmpresaQaRelease}
@@ -404,16 +402,75 @@ Pagina Relatorio
         Run Keyword And Ignore Error    Click no Item    ${Notifications}
     END
 
-Pesquisa Atendimento
+
+Valida tela de pesquisa atendimento
     [Arguments]    ${cdAtendimento}
     TRY
+        Sleep    3s
         Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
+        Wait Until Element Is Enabled    ${XpathTxtAtendimento}    120
         Sleep    1s
-        Input Text    ${XpathTxtAtendimento}    ${cdAtendimento} 
+        Wait Until Keyword Succeeds    5x    6s    input text     ${XpathTxtAtendimento}   ${EMPTY}
+        input text     ${XpathTxtAtendimento}   ${EMPTY}
+        Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
+        input text     ${XpathTxtAtendimento}   ${EMPTY}
+        RETURN    OK 
     EXCEPT
         Log    Falha ao entrar no relatorio
         Logar e Acessar a tela
     END
 
     
+Buscar Conta no Grid 
+	[Arguments]    	${nrConta}
+    TRY
+        Wait Until Keyword Succeeds    10x    6s    Wait Until Element Is Visible    ${XpathTblContasCell1Col1}    120    
+        FOR    ${i}    IN RANGE    50
+            ${nrContaSistema}    Get Value nrConta    ${i}  
+            ${True}		Run Keyword And Return Status     Should Be Equal As Strings    ${nrConta}    ${nrContaSistema}
+            IF    ${True}    
+                ${CheckBox}	    Run Keyword And Return Status      Element Should Be Visible  //*[@id="grdRegFat"]/div[4]/div[3]/div/div[${i}]/div[14]/div/button[@state='unchecked']
+                IF    ${CheckBox}
+                    Click Element    //*[@id="grdRegFat"]/div[4]/div[3]/div/div[${i}]/div[14]/div/button
+                END
+                Click Element    //*[@id="grdRegFat"]/div[4]/div[3]/div/div[${i}]/div[1]/div
+                BREAK
+            END
+        END
+        RETURN    OK 
+    EXCEPT
+        Log    Erro ao buscar conta no grid
+        RETURN    FAILD 
+    END
 
+
+
+Get Value nrConta
+    [Arguments]    	${i}
+    TRY
+        ${nrContaSistema}   RPA.Browser.Selenium.Get Text    //*[@id="grdRegFat"]/div[4]/div[3]/div/div[${i}]/div[1]/div
+        RETURN    ${nrContaSistema}
+    EXCEPT
+        Log    Não Existe Conta
+    END
+    
+#${Result}=     Run Keyword And Return Status     Page Should Contain Element  ${Xpath} 
+
+
+Pesquisa Atendimento
+    [Arguments]    ${cdAtendimento}
+    TRY
+        Sleep     5s
+        Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
+        Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
+        Click Element    ${XpathBtnExecutar}
+        Sleep     5s    
+            
+        # Seleciona conta
+        Wait Until Keyword Succeeds    10x    6s    Wait Until Element Is Visible    ${XpathTblContasCell1Col1}    120
+        RETURN    OK
+    EXCEPT
+        Log    Erro ao pesquisar o atendimento
+        RETURN    FAILD
+    END
+    

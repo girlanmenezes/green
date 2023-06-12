@@ -21,11 +21,11 @@ RPA Green
         Skip    Consulta nao retornou dados.
     END
 
-  
-    
+    #${cdAtendimento}    Set Variable    5157868
+    #${nrConta}    Set Variable    22868146 
 
     #Abrir navegador e acessar a tela
-    #Logar e Acessar a tela 
+    Logar e Acessar a tela 
         
     FOR  ${robot}     IN    @{results}
         #Pegando numero da conta e atendimento
@@ -41,19 +41,31 @@ RPA Green
         Log    ${statusDownload}
         
         IF    ${statusDownload}    CONTINUE
+        
+        # Valida Pesquisa Atendimento
+        Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
+        
 
+        # Pesquisa o atendimento
+        ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
 
-
+        IF    "${statusPesquisaAtendimeto}"=="FAILD"    CONTINUE
+        
+        #Busca conta no griD e aciona o checkbox de imprimir
+        ${statusBuscaGrid}=    Buscar Conta no Grid    ${nrConta}
+       
+        IF    "${statusBuscaGrid}"=="FAILD"    CONTINUE
+        
         #Realiza o download do relatorio
         ${statusDownload}=    Download do relatorio   ${cdAtendimento}    ${nrConta}    ${pathMain}
         Log    ${statusDownload}
+
+        IF    "${statusDownload}"=="FAILD"    CONTINUE
 
         IF    "${statusDownload}"=="OK"
             Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}
             Pagina Relatorio
         END
-
-        
 
     END
     
