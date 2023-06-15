@@ -40,6 +40,7 @@ RPA Green
 
         ${statusDownload}=     read csv file    ${pathMain}    ${nrConta}
         Log    ${statusDownload}
+        Log To Console    read csv file
         
         IF    ${statusDownload}    CONTINUE
         
