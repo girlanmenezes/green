@@ -1,7 +1,7 @@
 import csv
 class ReadCSV():
 
-    def read_csv_file(self, pathCsv, cdAtendimento):
+    def read_csv_file(self, pathCsv, nrConta):
         '''This creates a keyword named "Read CSV File"
 
         This keyword takes one argument, which is a path to a .csv file. It
@@ -14,8 +14,7 @@ class ReadCSV():
         with open(caminho, 'r') as filename:
             reader = csv.reader(filename, delimiter=',', dialect='excel')
             for row in reader:
-                if str(row[0]) == str(cdAtendimento):
+                if str(row[1]) == str(nrConta):
                     return True
-                    print("Existe na tabela")
             print("não Existe na tabela")
             return False

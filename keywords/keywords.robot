@@ -32,8 +32,8 @@ ${btnExecutar}                      xpath=//li[@id='toolbar']//li[@id='tb-execut
 ${so}                               windows
 ${browser}                          chrome
 ${ambiente}                         qarelease
-#${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
-${url}                               http://trnmvcr2.adhosp.com.br:82/mvautenticador-cas/login
+${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
+#${url}                               http://hmlerpmvcr2.adhosp.com.br:81/soul-mv/
 ${nrContaSistema}
 #Portable
 #${options}                           binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
@@ -42,22 +42,21 @@ ${nrContaSistema}
 #Chrome
 ${options}                           binary_location="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
 
-${dadosLoginUsuarioQaRelease}       RPA_CONTA
-${dadosLoginSenhaQaRelease}         12345678
+#${dadosLoginUsuarioQaRelease}       RPA_CONTA
+#${dadosLoginSenhaQaRelease}         12345678
 
-#${dadosLoginUsuarioQaRelease}       TIRPAWATI
-#${dadosLoginSenhaQaRelease}         TIRPAWATI
+${dadosLoginUsuarioQaRelease}       TIRPAWATI
+${dadosLoginSenhaQaRelease}         TIRPAWATI
 
-#${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
+${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
 
-${dadosLoginEmpresaQaRelease}       TREINAMENTO - HOSPITAL NOVE DE JULHO..
+#${dadosLoginEmpresaQaRelease}       HML - HOSPITAL NOVE DE JULHO
 #child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
 
-#Portable
+#HML
 #${IdIframe}                            id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
-#Chrome
-${IdIframe}                              id=child_APOIO.HTML,ATEND.HTML,CONEC.HTML,CONTR.HTML,DIAGN.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PAGU.HTML,SUPRI.HTML   
-
+#PROD
+${IdIframe}                              id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
 #...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
 #...                                 id=child_APOIO.HTML,ATEND.HTML,CONEC.HTML,CONTR.HTML,DIAGN.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PAGU.HTML,SUPRI.HTML   
 ${IdIframePagu}                     id=child_PAGU.HTML
@@ -69,6 +68,7 @@ ${EMPTY}
 # Elementos tela M_LAN_HOS - Download relatorio
 ${XpathTxtAtendimento}              xpath=//*[@id='inp:cdAtendimento']
 ${XpathBtnExecutar}                 xpath=//a[@title='Executar Consulta']
+${XpathBtnProcurar}                 xpath=//a[@title='Procurar']
 ${XpathTblContasCell1Col1}          xpath=//div[@class='slick-cell b0 f0 selected']
 ${IdBtnRelatorio}                   id=btnImprimir
 ${BotaoAlertaNao}                   xpath=//button[contains(text(),"não")]
@@ -122,6 +122,7 @@ Download do relatorio
             Run Keyword And Ignore Error    Click Element    ${XpathMsgInfoBtnOK}
         END
 
+        Run Keyword And Ignore Error    Clear Element Text    ${IdCboSaidaRelatorio}
         Seleciona Item Combobox    ${IdCboSaidaRelatorio}    Tela
         Click Element    ${XpathBtnImprimir}
 
@@ -193,16 +194,20 @@ Acessar a tela pela busca |${tela}||${nomeItem}|
     Input Text    ${HomeXpathInputPesquisa}    ${tela}
     Click Elemento por titulo    ${nomeItem}
     Sleep    10s
-    Unselect Frame
     
-    IF    "${las}" == "@las"
-        Seleciona frame    ${IdIframe}    180
-        Wait Until Element Is Visible    ${classLasDisplay}    120
-        Unselect Frame
+    Seleciona frame    ${IdIframe}    180
+
+
+Las
+    Seleciona frame    ${IdIframe}    180
+    ${ls}    Run Keyword And Return Status    Wait Until Element Is Visible    ${classLasDisplay}    120
+    IF    ${ls}
+        #Unselect Frame
+        Sleep     3s
         Press keys    None    TAB
         Press keys    None    ENTER
     END
-    Seleciona frame    ${IdIframe}    180
+
 
 Click Elemento por titulo
     [Arguments]    ${titulo}    ${timeout}=${60}
@@ -241,7 +246,7 @@ Acessar a tela "${caminhoSelecaoMenu}"
 Seleciona Item Combobox
     [Arguments]    ${elemento}    ${valor}
     Wait Until Element Is Visible    ${elemento}    30
-    Input Text    ${elemento}    ${valor}
+    #Input Text    ${elemento}    ${valor}
     Sleep    1
     Wait Until Element Is Enabled    ${elemento}    5
     Press Keys    ${elemento}    ENTER
@@ -400,6 +405,9 @@ Pagina Relatorio
         Run Keyword And Ignore Error    Seleciona frame    ${IdIframe}    180 
         Run Keyword And Ignore Error    Click Alert    ${BotaoAlertaNao} 
         Run Keyword And Ignore Error    Click no Item    ${Notifications}
+        Sleep     2s
+        Run Keyword And Ignore Error    Wait Until Element Is Visible     ${XpathBtnProcurar}
+        Run Keyword And Ignore Error    Click Element    ${XpathBtnProcurar}
     END
 
 

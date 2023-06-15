@@ -16,13 +16,14 @@ ${pathMain}         ${CURDIR}    # Path raiz do projeto
 *** Tasks ***
 RPA Green
     ${results}        Get Dados Banco    #Busca os dados no banco
-
+ 
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
     END
 
     #${cdAtendimento}    Set Variable    5157868
     #${nrConta}    Set Variable    22868146 
+
 
     #Abrir navegador e acessar a tela
     Logar e Acessar a tela 
@@ -37,7 +38,7 @@ RPA Green
         Log    ${nrConta}
         Log    ${cdAtendimento}
 
-        ${statusDownload}=     read csv file    ${pathMain}    ${cdAtendimento}
+        ${statusDownload}=     read csv file    ${pathMain}    ${nrConta}
         Log    ${statusDownload}
         
         IF    ${statusDownload}    CONTINUE
@@ -63,8 +64,9 @@ RPA Green
         IF    "${statusDownload}"=="FAILD"    CONTINUE
 
         IF    "${statusDownload}"=="OK"
-            Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}
+            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}
             Pagina Relatorio
+            IF    "${statusIntegra}"=="FAILD"    CONTINUE
         END
 
     END

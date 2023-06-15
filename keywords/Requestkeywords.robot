@@ -21,13 +21,13 @@ ${URL_GREEN}            https://portal-drp.green-sempapel.com.br/integrationserv
 
 *** Keywords ***
 Connection
-    Run Keyword And Ignore Error    DELETE On Session
+    Run Keyword And Ignore Error    Delete All Sessions
     Create Session    token    ${URL_CONNECTION}
     ${headers}    Create Dictionary
     ...    X-IntegrationServer-Username=WATI
     ...    X-IntegrationServer-Password=Wat1$#@!
 
-    ${RESPONSE}    GET On Session    token    url=${URL_CONNECTION}    headers=${headers}
+    ${RESPONSE}    GET On Session    token    url=${URL_CONNECTION}    headers=${headers} 
 
     LOG    ${RESPONSE.headers}
 
@@ -40,7 +40,8 @@ Connection
 
 Document
     [Arguments]    ${token}      ${cdAtendimento}    ${nrConta}    ${pathMain}
-
+    
+    Run Keyword And Ignore Error    Delete All Sessions
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\document.json
     ${name}    Set Variable    ${ID_NAME}
     ${body_json}    Update value to JSON    ${body_json}    $..name      ${name}
@@ -73,11 +74,11 @@ Document
 Page
     [Arguments]    ${ID_DOCUMENT}    ${token}    ${nomePDF}    ${pathMain}
 
-    Create Session    page    ${URL_GREEN}
+    Create Session    page    ${URL_GREEN}    
 
     # ${DOC}    ${CURDIR}/robo/resources/${nomePDF}
     ${DOC}    Set Variable    ${pathMain}\\resources\\PDF\\${nomePDF}
-
+    
     ${headers}    Create Dictionary
     ...    X-IntegrationServer-Session-Hash=${token}
     ...    X-IntegrationServer-Resource-Name=${nomePDF}
@@ -94,7 +95,7 @@ Page
 
 
 WorkflowItem
-    [Arguments]    ${document}      ${token}       ${pathMain}
+    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}
 
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\work.json
     ${body_json}    Update value to JSON    ${body_json}    $..objectId      ${document}
@@ -128,9 +129,6 @@ Integração WebService
     [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
     TRY
-        Set Suite Variable    ${cdAtendimento}    ${cdAtendimento}
-        Set Suite Variable    ${nrConta}    ${nrConta}
-
         # Conecta web service
         ${token}    Connection
         # Cria document JSON
@@ -144,10 +142,11 @@ Integração WebService
         # Envia arquivo web service
         ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
 
-        WorkflowItem    ${document}    ${token}    ${pathMain}
+        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}
 
     EXCEPT
         Log     Falha ao integrar Green
+        RETURN    FAILD
     END
 
 
