@@ -148,5 +148,3 @@ Integração WebService
         Log     Falha ao integrar Green
         RETURN    FAILD
     END
-
-
