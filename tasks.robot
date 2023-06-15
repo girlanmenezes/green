@@ -8,7 +8,7 @@ Resource            Keywords.robot
 Resource            Requestkeywords.robot
 
 *** Variables ***
-${pathMain}         C:\\workspace\\green\\resources    # Path raiz do projeto
+${pathMain}         C:\\workspace\\green    # Path raiz do projeto
 # ${cdPaciente}       
 # ${cdAtendimento}    
 # ${nrConta}          

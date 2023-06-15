@@ -297,6 +297,7 @@ Seleciona frame
 Realiza Login
     [Arguments]    ${usuario}    ${senha}    ${empresa}
     Log To Console    Realizar Login
+    Sleep    2s
     Wait Until Element Is Visible    ${PageIdTxtUsuario}    120    error=Erro ao efetuar o login
     Sleep    2
     Wait Until Element Is Not Visible    ${PageClassImgLoading}    120    error=Erro ao efetuar o login
