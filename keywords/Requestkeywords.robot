@@ -92,8 +92,16 @@ Page
     IF    (${validateStatus} and ${validateCode}) == ${True}
         Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
     ELSE
-        Log CSV    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False} 
+        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False} 
     END
+
+    Log    
+
+    # IF    (${validateStatus} and ${validateCode}) == ${True}
+    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV    ${True}
+    # ELSE
+    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV   ${False} 
+    # END
 
     RETURN    ${RESPONSE}
 
@@ -106,7 +114,7 @@ Integração WebService
     # Conecta web service
     ${token}    Connection
     # Cria document JSON
-    ${document}    Document    ${token}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    ${document}    Document    ${token}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
     # # Verifica se existe apenas um arquivo na pasta
     # ${files}    RPA.FileSystem.List Files In Directory    ${pathMain}\\resources\\PDF
@@ -124,13 +132,12 @@ Integração WebService
     
     # Obtem nome do arquivo PDF
     ${fileName}    Pdf.Get File Name    ${pathMain}\\resources\\PDF
-
     # Envia arquivo web service
     ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
 
     # # Cria novo registo
     # ${csvData}    Convert To String
-    # ...    ${cdAtendimento},${nrConta},${fileName},${date},sucesso,Envia do com sucesso
+    # ...    ${cdAtendimento},${cdPaciente},${nrConta},${fileName},${date},sucesso,Envia do com sucesso
 
     # # Verifica se já existe o arquivo RELATORIO_ENVIOS.csv
     # ${createdCsv}    Run Keyword And Return Status

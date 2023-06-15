@@ -33,10 +33,18 @@ ${ambiente}                         qarelease
 ${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
 
 ${options}
+<<<<<<< HEAD
 ...                                 binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe"; add_argument("--disable-dev-shm-usage"); add_argument("--no-sandbox"); add_argument("--start-maximized"); add_argument("headless");
 ${dadosLoginUsuarioQaRelease}       TIRPAWATI
 ${dadosLoginSenhaQaRelease}         TIRPAWATI
 ${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
+=======
+...                                 add_argument("--disable-dev-shm-usage"); add_argument("--no-sandbox"); add_argument("--start-maximized")
+${dadosLoginUsuarioQaRelease}       ANDRE.VASCONCELOS
+${dadosLoginSenhaQaRelease}         12345678
+${dadosLoginEmpresaQaRelease}       5 - HOSPITAL MV - MATRIZ
+${xpathTelaLicensa}                 xpath=//input[contains(@value, 'continuar')]
+>>>>>>> d154bed37e38b9eb615b397fdccb232aac4010e8
 ${IdIframe}
 ...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
 ${IdIframePagu}                     id=child_PAGU.HTML
@@ -135,6 +143,7 @@ Download do relatorio
     END
 
     Download    ${pdfUrl}    ${pathMain}\\resources\\PDF    # Realiza download do relatório
+    Sleep    5
 
     # Renomeio o arquivo
     ${date}    Get Current Date    result_format=%d%m%Y%H%M%S
@@ -143,7 +152,13 @@ Download do relatorio
     ${lastPosition}    Evaluate    ${lastPosition}-1
     # ${newFileName}    Replace String    ${fileName}[${lastPosition}]    .pdf    _${date}.pdf
     ${newFileName}    Set Variable    ${date}.pdf
+
+    Log    Arquivo baixado: ${fileName}[${lastPosition}]
+
     RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
+    # RPA.FileSystem.Move File    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${fileName}[${lastPosition}]    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\PDF\\${newFileName}
+    
+    Log    Arquivo renomeado: ${newFileName}
 
 Acessar a tela pela busca |${tela}||${nomeItem}|
     #${printscreen}
@@ -240,8 +255,15 @@ Realiza Login
     Select From List By Label    ${PageIdSelectEmpresa}    ${empresa}
     # Capture Page Screenshot
     Click Button    ${PageIdBtnLogin}
+    
+    ${status}    Run Keyword And Return Status    Wait Until Element Is Visible    ${xpathTelaLicensa}    10
+    IF    ${status} == ${True}
+        Click Element    ${xpathTelaLicensa} 
+    END
+
     Wait Until Element Is Visible    ${PageIClassListMenu}    timeout=60    error=Erro ao efetuar o login
     Sleep    2
+
 
 Nova sessao
     ${url}    Set Variable If    %{DRY_RUN=${True}} == ${True}    ${url}    ${QA_ENVIROMENT}
