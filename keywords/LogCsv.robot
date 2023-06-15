@@ -20,7 +20,7 @@ Log CSV
         RPA.FileSystem.Create File    ${pathCsv}\\RELATORIO_ENVIOS.csv
         RPA.FileSystem.Append To File
         ...    ${pathCsv}\\RELATORIO_ENVIOS.csv
-        ...    cod_paciente,cod_atendimento,nr_conta,arquivo,data_envio,status_envio,msg_envio\n
+        ...    cod_atendimento,nr_conta,arquivo,data_envio,status_envio,msg_envio\n
     END
 
     # Cria novo registo
