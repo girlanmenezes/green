@@ -2,7 +2,8 @@
 Documentation       Green.
 
 Library             Collections
-# Library             DB
+Library             ReadCSV
+Library             DB
 Resource            Keywords.robot
 Resource            Requestkeywords.robot
 
@@ -12,36 +13,62 @@ ${pathMain}         ${CURDIR}    # Path raiz do projeto
 # ${cdAtendimento}    
 # ${nrConta}          
 
-${cdPaciente}       1161061
-${cdAtendimento}    67139
-${nrConta}          7660
-
 *** Tasks ***
 RPA Green
-    # rcc run --task "Run RPA Green"
-    # Logar e acessar a tela - Foi utilizado o projeto de automação existente
-    Logar e Acessar a tela
-    # Realiza o download do relatorio
-    Download do relatorio    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
-    #    Autentica serviço e realiza a requisição
-    Integração WebService    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    ${results}        Get Dados Banco    #Busca os dados no banco
+ 
+    IF    "${results}"=="False"
+        Skip    Consulta nao retornou dados.
+    END
 
-# *** Tasks ***
-# RPA Green
-#     # ${results}        Get Dados    #Busca os dados no banco
+    #${cdAtendimento}    Set Variable    5157868
+    #${nrConta}    Set Variable    22868146 
 
-#             #Logar e acessar a tela - Foi utilizado o projeto de automação existente
-#     Logar e Acessar a tela 
+
+    #Abrir navegador e acessar a tela
+    Logar e Acessar a tela 
         
-#     FOR  ${robot}     IN    ${results}
-#         #VALIDAR ESSE DE/PARA
-#         ${cdPaciente} = robot[1]
-#         ${cdAtendimento}= robot[2]
-#         ${nrConta}= robot[6]
+    FOR  ${robot}     IN    @{results}
+        #Pegando numero da conta e atendimento
+        ${cdAtendimento}    Set Variable    ${robot}[3]
+        ${nrConta}    Set Variable    ${robot}[1] 
 
-#         #Realiza o download do relatorio
-#         Download do relatorio    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+        IF    ${nrConta}==None    CONTINUE
 
-#         #Autentica serviço e realiza a requsição
-#         Integração WebService    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
-#     END
+        Log    ${nrConta}
+        Log    ${cdAtendimento}
+
+        ${statusDownload}=     read csv file    ${pathMain}    ${nrConta}
+        Log    ${statusDownload}
+        
+        IF    ${statusDownload}    CONTINUE
+        
+        # Valida Pesquisa Atendimento
+        Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
+        
+
+        # Pesquisa o atendimento
+        ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
+
+        IF    "${statusPesquisaAtendimeto}"=="FAILD"    CONTINUE
+        
+        #Busca conta no griD e aciona o checkbox de imprimir
+        ${statusBuscaGrid}=    Buscar Conta no Grid    ${nrConta}
+       
+        IF    "${statusBuscaGrid}"=="FAILD"    CONTINUE
+        
+        #Realiza o download do relatorio
+        ${statusDownload}=    Download do relatorio   ${cdAtendimento}    ${nrConta}    ${pathMain}
+        Log    ${statusDownload}
+
+        IF    "${statusDownload}"=="FAILD"    CONTINUE
+
+        IF    "${statusDownload}"=="OK"
+            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}
+            Pagina Relatorio
+            IF    "${statusIntegra}"=="FAILD"    CONTINUE
+        END
+
+    END
+    
+    # rcc run --task "Run RPA Green"

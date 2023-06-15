@@ -9,6 +9,7 @@ Library             RPA.Windows
 Library             OperatingSystem
 Library             DateTime
 Variables           variables.py
+Resource            Keywords.robot
 
 Resource            Pdf.robot
 Resource            LogCsv.robot
@@ -20,12 +21,13 @@ ${URL_GREEN}            https://portal-drp.green-sempapel.com.br/integrationserv
 
 *** Keywords ***
 Connection
+    Run Keyword And Ignore Error    Delete All Sessions
     Create Session    token    ${URL_CONNECTION}
     ${headers}    Create Dictionary
     ...    X-IntegrationServer-Username=WATI
     ...    X-IntegrationServer-Password=Wat1$#@!
 
-    ${RESPONSE}    GET On Session    token    url=${URL_CONNECTION}    headers=${headers}
+    ${RESPONSE}    GET On Session    token    url=${URL_CONNECTION}    headers=${headers} 
 
     LOG    ${RESPONSE.headers}
 
@@ -37,12 +39,12 @@ Connection
     RETURN    ${token}
 
 Document
-    [Arguments]    ${token}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
-
+    [Arguments]    ${token}      ${cdAtendimento}    ${nrConta}    ${pathMain}
+    
+    Run Keyword And Ignore Error    Delete All Sessions
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\document.json
     ${name}    Set Variable    ${ID_NAME}
-    ${body_json}    Update value to JSON    ${body_json}    $..name    ${name}
-    ${body_json}    Update value to JSON    ${body_json}    $..field1    ${cdPaciente}
+    ${body_json}    Update value to JSON    ${body_json}    $..name      ${name}
     ${body_json}    Update value to JSON    ${body_json}    $..field2    ${cdAtendimento}
     ${body_json}    Update value to JSON    ${body_json}    $..field3    ${nrConta}
 
@@ -72,11 +74,11 @@ Document
 Page
     [Arguments]    ${ID_DOCUMENT}    ${token}    ${nomePDF}    ${pathMain}
 
-    Create Session    page    ${URL_GREEN}
+    Create Session    page    ${URL_GREEN}    
 
     # ${DOC}    ${CURDIR}/robo/resources/${nomePDF}
     ${DOC}    Set Variable    ${pathMain}\\resources\\PDF\\${nomePDF}
-
+    
     ${headers}    Create Dictionary
     ...    X-IntegrationServer-Session-Hash=${token}
     ...    X-IntegrationServer-Resource-Name=${nomePDF}
@@ -87,37 +89,62 @@ Page
     ...    headers=${headers}
     ...    data=${DOC} 
 
+
+    RETURN    ${RESPONSE}
+
+
+
+WorkflowItem
+    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}
+
+    ${body_json}    Load JSON from file    ${pathMain}\\resources\\work.json
+    ${body_json}    Update value to JSON    ${body_json}    $..objectId      ${document}
+
+    Log    ${body_json}
+
+    ${headers}    Create Dictionary
+    ...    X-IntegrationServer-Session-Hash=${token}
+    ...    Content-Type=application/json
+
+    Create Session    document    ${URL_GREEN}
+    ...    headers=${headers}
+
+    ${RESPONSE}    POST On Session    document
+    ...    /workflowItem
+    ...    headers=${headers}
+    ...    json=${body_json}
+    
     ${validateStatus}    Run Keyword And Return Status    Request Should Be Successful
     ${validateCode}    Run Keyword And Return Status    Status Should Be    201
 
     IF    (${validateStatus} and ${validateCode}) == ${True}
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
+        Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
     ELSE
-        Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${False}
+        Log    Integração não foi realizada 
     END
 
-    Log    
 
-    # IF    (${validateStatus} and ${validateCode}) == ${True}
-    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV    ${True}
-    # ELSE
-    #     Log CSV    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    C:\\Users\\server-thiago\\Documents\\WATI\\MV\\Automacoes\\RPA\\green\\resources\\CSV   ${False} 
-    # END
-
-    RETURN    ${RESPONSE}
 
 Integração WebService
-    [Arguments]    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
-    Set Suite Variable    ${cdPaciente}    ${cdPaciente}
-    Set Suite Variable    ${cdAtendimento}    ${cdAtendimento}
-    Set Suite Variable    ${nrConta}    ${nrConta}
+    TRY
+        # Conecta web service
+        ${token}    Connection
+        # Cria document JSON
+        ${document}    Document    ${token}    ${cdAtendimento}    ${nrConta}    ${pathMain}
 
-    # Conecta web service
-    ${token}    Connection
-    # Cria document JSON
-    ${document}    Document    ${token}    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${pathMain}
-    # Obtem nome do arquivo PDF
-    ${fileName}    Pdf.Get File Name    ${pathMain}\\resources\\PDF
-    # Envia arquivo web service
-    ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
+        ${date}    Get Current Date    result_format=%d-%m-%Y-%H:%M:%S
+
+        # Obtem nome do arquivo PDF
+        ${fileName}    Pdf.Get File Name    ${pathMain}\\resources\\PDF
+
+        # Envia arquivo web service
+        ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
+
+        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}
+
+    EXCEPT
+        Log     Falha ao integrar Green
+        RETURN    FAILD
+    END

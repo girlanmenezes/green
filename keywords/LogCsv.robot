@@ -6,7 +6,7 @@ Library             RPA.Browser.Selenium
 
 *** Keywords ***
 Log CSV
-    [Arguments]    ${cdPaciente}    ${cdAtendimento}    ${nrConta}    ${filePdfName}    ${pathCsv}    ${status}
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${filePdfName}    ${pathCsv}    ${status}
 
     ${date}    Get Current Date    result_format=%d-%m-%Y-%H:%M:%S
 
@@ -25,9 +25,9 @@ Log CSV
 
     # Cria novo registo
     IF    ${status}
-        ${csvData}    Convert To String    ${cdPaciente},${cdAtendimento},${nrConta},${filePdfName},${date},Sucesso,Arquivo enviado
+        ${csvData}    Convert To String    ${cdAtendimento},${nrConta},${filePdfName},${date},Sucesso,Arquivo enviado
     ELSE
-        ${csvData}    Convert To String    ${cdPaciente},${cdAtendimento},${nrConta},${filePdfName},${date},Falha,Arquivo não foi enviado
+        ${csvData}    Convert To String    ${cdAtendimento},${nrConta},${filePdfName},${date},Falha,Arquivo não foi enviado
     END
 
     # Adiciona novo registro ao arquivo
