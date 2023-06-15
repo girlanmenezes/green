@@ -41,9 +41,9 @@ Connection
 Document
     [Arguments]    ${token}      ${cdAtendimento}    ${nrConta}    ${pathMain}
     
-    Run Keyword And Ignore Error    Delete All Sessions
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\document.json
-    ${name}    Set Variable    ${ID_NAME}
+    ${uuid}    Evaluate    uuid.uuid4()    modules=uuid
+    ${name}    Set Variable    ${uuid}
     ${body_json}    Update value to JSON    ${body_json}    $..name      ${name}
     ${body_json}    Update value to JSON    ${body_json}    $..field2    ${cdAtendimento}
     ${body_json}    Update value to JSON    ${body_json}    $..field3    ${nrConta}
