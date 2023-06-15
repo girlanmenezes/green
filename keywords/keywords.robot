@@ -45,23 +45,6 @@ ${options}                           binary_location="C:\\Program Files\\Google\
 #${dadosLoginUsuarioQaRelease}       RPA_CONTA
 #${dadosLoginSenhaQaRelease}         12345678
 
-<<<<<<< HEAD
-${options}
-<<<<<<< HEAD
-...                                 binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe"; add_argument("--disable-dev-shm-usage"); add_argument("--no-sandbox"); add_argument("--start-maximized"); add_argument("headless");
-${dadosLoginUsuarioQaRelease}       TIRPAWATI
-${dadosLoginSenhaQaRelease}         TIRPAWATI
-${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
-=======
-...                                 add_argument("--disable-dev-shm-usage"); add_argument("--no-sandbox"); add_argument("--start-maximized")
-${dadosLoginUsuarioQaRelease}       ANDRE.VASCONCELOS
-${dadosLoginSenhaQaRelease}         12345678
-${dadosLoginEmpresaQaRelease}       5 - HOSPITAL MV - MATRIZ
-${xpathTelaLicensa}                 xpath=//input[contains(@value, 'continuar')]
->>>>>>> d154bed37e38b9eb615b397fdccb232aac4010e8
-${IdIframe}
-...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
-=======
 ${dadosLoginUsuarioQaRelease}       TIRPAWATI
 ${dadosLoginSenhaQaRelease}         TIRPAWATI
 
@@ -76,7 +59,6 @@ ${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
 ${IdIframe}                              id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
 #...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
 #...                                 id=child_APOIO.HTML,ATEND.HTML,CONEC.HTML,CONTR.HTML,DIAGN.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PAGU.HTML,SUPRI.HTML   
->>>>>>> e18a104e7bc1e8c67934ea21355e6822e9320a1f
 ${IdIframePagu}                     id=child_PAGU.HTML
 @{novaListaItensMenu}
 @{validaItemExistente}
