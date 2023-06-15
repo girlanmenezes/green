@@ -13,7 +13,8 @@ class Banco:
             username = "TI_GREEN"
             password = "@Acesso@2019"
             jvm_path = "C:/Program Files/Java/jdk-11/bin/server/jvm.dll"
-            jpype.startJVM(jvm_path, "-Djava.class.path={}".format(driver_path))
+            if not jpype.isJVMStarted():
+                jpype.startJVM(jvm_path, "-Djava.class.path={}".format(driver_path))
 
             connection = jaydebeapi.connect("oracle.jdbc.driver.OracleDriver", conn_string, [username, password])
 

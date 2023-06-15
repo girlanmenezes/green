@@ -33,7 +33,7 @@ ${so}                               windows
 ${browser}                          chrome
 ${ambiente}                         qarelease
 ${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
-#${url}                               http://hmlerpmvcr2.adhosp.com.br:81/soul-mv/
+#${url}                               http://hmlerpmvcr2.adhosp.com.br:81/soul-mv/ 517789
 ${nrContaSistema}
 #Portable
 #${options}                           binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
@@ -479,7 +479,11 @@ Pesquisa Atendimento
         Sleep     5s    
             
         # Seleciona conta
-        Wait Until Keyword Succeeds    10x    6s    Wait Until Element Is Visible    ${XpathTblContasCell1Col1}    120
+        ${dadosAtendimento}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathTblContasCell1Col1}    120
+        Log To Console     ${dadosAtendimento}
+        IF    '${dadosAtendimento}' != 'True'
+           Log    Pesquisa não retornou dados  para o atendimento:  ${dadosAtendimento}
+        END
         RETURN    OK
     EXCEPT
         Log    Erro ao pesquisar o atendimento

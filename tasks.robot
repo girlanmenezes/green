@@ -15,7 +15,7 @@ ${pathMain}         C:\\workspace\\green    # Path raiz do projeto
 
 *** Tasks ***
 RPA Green
-    ${results}        Get Dados Banco    #Busca os dados no banco
+    ${results}        Get Atendimento Banco    #Busca os dados no banco
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
@@ -30,13 +30,15 @@ RPA Green
         
     FOR  ${robot}     IN    @{results}
         #Pegando numero da conta e atendimento
-        ${cdAtendimento}    Set Variable    ${robot}[3]
-        ${nrConta}    Set Variable    ${robot}[1] 
-
+        ${cdAtendimento}    Set Variable    ${robot}[2]
+        ${nrConta}        Get Conta Banco    ${cdAtendimento}    #Busca os dados no banco
+        Log    ${nrConta}[0]
+    
         IF    ${nrConta}==None    CONTINUE
 
         Log    ${nrConta}
         Log    ${cdAtendimento}
+
 
         ${statusDownload}=     read csv file    ${pathMain}    ${nrConta}
         Log    ${statusDownload}
