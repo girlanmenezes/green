@@ -22,6 +22,7 @@ ${URL_GREEN}            https://portal-drp.green-sempapel.com.br/integrationserv
 *** Keywords ***
 Connection
     Run Keyword And Ignore Error    Delete All Sessions
+    Log To Console    Request Connection
     Create Session    token    ${URL_CONNECTION}
     ${headers}    Create Dictionary
     ...    X-IntegrationServer-Username=WATI
@@ -40,7 +41,7 @@ Connection
 
 Document
     [Arguments]    ${token}      ${cdAtendimento}    ${nrConta}    ${pathMain}
-    
+    Log To Console    Request Document
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\document.json
     ${uuid}    Evaluate    uuid.uuid4()    modules=uuid
     ${name}    Set Variable    ${uuid}
@@ -73,7 +74,7 @@ Document
 
 Page
     [Arguments]    ${ID_DOCUMENT}    ${token}    ${nomePDF}    ${pathMain}
-
+    Log To Console    Request Page
     Create Session    page    ${URL_GREEN}    
 
     # ${DOC}    ${CURDIR}/robo/resources/${nomePDF}
@@ -96,7 +97,7 @@ Page
 
 WorkflowItem
     [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}
-
+    Log To Console    Request WorkFlow
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\work.json
     ${body_json}    Update value to JSON    ${body_json}    $..objectId      ${document}
 

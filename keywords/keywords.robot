@@ -112,6 +112,7 @@ Download do relatorio
     [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
     # [Arguments]    ${cdAtendimento}    ${nrConta}    ${outputReport}
     TRY
+        Log To Console    Download Relatorio
         # Imprime relatório
         Click Element    ${IdBtnRelatorio}
 
@@ -189,6 +190,7 @@ Download do relatorio
 
 Acessar a tela pela busca |${tela}||${nomeItem}|
     #${printscreen}
+    Log To Console    Acessando a tela pela busca
     Unselect Frame
     Click Element    ${HomeXpathBtnMenu}
     Input Text    ${HomeXpathInputPesquisa}    ${tela}
@@ -294,6 +296,7 @@ Seleciona frame
 
 Realiza Login
     [Arguments]    ${usuario}    ${senha}    ${empresa}
+    Log To Console    Realizar Login
     Wait Until Element Is Visible    ${PageIdTxtUsuario}    120    error=Erro ao efetuar o login
     Sleep    2
     Wait Until Element Is Not Visible    ${PageClassImgLoading}    120    error=Erro ao efetuar o login
@@ -319,7 +322,7 @@ Nova sessao
     #Add Cookie    las-host    http://127.0.0.1:32785
     Maximize Browser Window
     Sleep    5s
-    Log     ABERTURA DO NAVEGADOR
+    Log To Console     ABERTURA DO NAVEGADOR
 
     Realiza Login    ${dadosLoginUsuarioQaRelease}    ${dadosLoginSenhaQaRelease}    ${dadosLoginEmpresaQaRelease}
 
