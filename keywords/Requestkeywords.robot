@@ -15,8 +15,13 @@ Resource            Pdf.robot
 Resource            LogCsv.robot
 
 *** Variables ***
-${URL_CONNECTION}       https://portal-drp.green-sempapel.com.br/integrationserver/connection
-${URL_GREEN}            https://portal-drp.green-sempapel.com.br/integrationserver/v1
+#${URL_CONNECTION}       https://portal-drp.green-sempapel.com.br/integrationserver/connection
+#${URL_GREEN}            https://portal-drp.green-sempapel.com.br/integrationserver/v1
+
+${URL_CONNECTION}       https://greenh9j.adhosp.com.br/integrationserver/connection
+${URL_GREEN}            https://greenh9j.adhosp.com.br/integrationserver/v1
+
+
 
 
 *** Keywords ***
@@ -25,8 +30,8 @@ Connection
     Log To Console    Request Connection
     Create Session    token    ${URL_CONNECTION}
     ${headers}    Create Dictionary
-    ...    X-IntegrationServer-Username=WATI
-    ...    X-IntegrationServer-Password=Wat1$#@!
+    ...    X-IntegrationServer-Username=REMESSADIGITAL
+    ...    X-IntegrationServer-Password=Green@2022
 
     ${RESPONSE}    GET On Session    token    url=${URL_CONNECTION}    headers=${headers} 
 
@@ -75,10 +80,13 @@ Document
 Page
     [Arguments]    ${ID_DOCUMENT}    ${token}    ${nomePDF}    ${pathMain}
     Log To Console    Request Page
-    Create Session    page    ${URL_GREEN}    
+    Create Session    page    ${URL_GREEN} 
+
+    ${DOC}=    Get File For Streaming Upload    ${pathMain}\\resources\\PDF\\${nomePDF}
+    #${DOC}=    Create Dictionary    file    ${file}   
 
     # ${DOC}    ${CURDIR}/robo/resources/${nomePDF}
-    ${DOC}    Set Variable    ${pathMain}\\resources\\PDF\\${nomePDF}
+    #${DOC}    Set Variable    ${pathMain}\\resources\\PDF\\${nomePDF}
     
     ${headers}    Create Dictionary
     ...    X-IntegrationServer-Session-Hash=${token}
@@ -121,8 +129,9 @@ WorkflowItem
 
     IF    (${validateStatus} and ${validateCode}) == ${True}
         Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
+        Log To Console    Integração foi realizada
     ELSE
-        Log    Integração não foi realizada 
+        Log    Integração não foi realizada
     END
 
 

@@ -1,15 +1,15 @@
 {
     "info": {
     "name": "",
-    "locationId": "321Z2B9_001PDCBSM002099",
+    "locationId": "301YX1W_0000EZ30T000001",
     "keys": {
-    "drawer": "HM_SAME",
+    "drawer": "PRONTUARIO",
     "field1": "", 
     "field2": "", 
     "field3": "",
     "field4": "",
     "field5": "", 
-    "documentType": "RAPS_HM"
+    "documentType": "RELATORIO RAPS - BRADESCO"
     }
     },
     "properties": []

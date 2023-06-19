@@ -93,7 +93,7 @@ Logar e Acessar a tela
 
         Sleep     5s
         Nova sessao
-        Acessar a tela pela busca |M_LAN_HOS||Conta do Atendimento|
+        Acessar a tela pela busca |M_LAN_HOS||Conta Hospitalar|
     EXCEPT
         Skip    Sistema Indisponivel
     END
@@ -481,9 +481,6 @@ Pesquisa Atendimento
         # Seleciona conta
         ${dadosAtendimento}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathTblContasCell1Col1}    120
         Log To Console     ${dadosAtendimento}
-        IF    '${dadosAtendimento}' != 'True'
-           Log    Pesquisa não retornou dados  para o atendimento:  ${dadosAtendimento}
-        END
         RETURN    OK
     EXCEPT
         Log    Erro ao pesquisar o atendimento

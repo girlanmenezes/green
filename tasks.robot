@@ -31,8 +31,7 @@ RPA Green
     FOR  ${robot}     IN    @{results}
         #Pegando numero da conta e atendimento
         ${cdAtendimento}    Set Variable    ${robot}[2]
-        ${nrConta}        Get Conta Banco    ${cdAtendimento}    #Busca os dados no banco
-        Log    ${nrConta}[0]
+        ${nrConta}          Set Variable    ${robot}[9]     #Busca os dados no banco
     
         IF    ${nrConta}==None    CONTINUE
 
@@ -40,20 +39,19 @@ RPA Green
         Log    ${cdAtendimento}
 
 
-        ${statusDownload}=     read csv file    ${pathMain}    ${nrConta}
-        Log    ${statusDownload}
+        ${statusCSV}=     read csv file    ${pathMain}    ${nrConta}
+        Log    ${statusCSV}
         Log To Console    read csv file
         
-        IF    ${statusDownload}    CONTINUE
+        IF    ${statusCSV}    CONTINUE
         
         # Valida Pesquisa Atendimento
         Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
-        
 
-        # Pesquisa o atendimento
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD"    CONTINUE
+        
         
         #Busca conta no griD e aciona o checkbox de imprimir
         ${statusBuscaGrid}=    Buscar Conta no Grid    ${nrConta}
