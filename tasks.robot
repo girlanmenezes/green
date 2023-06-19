@@ -9,24 +9,21 @@ Resource            Requestkeywords.robot
 
 *** Variables ***
 ${pathMain}         C:\\workspace\\green    # Path raiz do projeto
-# ${cdPaciente}       
-# ${cdAtendimento}    
-# ${nrConta}          
+${pathCSV}          C:\\workspace\\green\\resources\\CSV\\RELATORIO_ENVIOS.csv
+${pathCSVat}        C:\\workspace\\green\\resources\\CSV\\RELATORIO_ATENDIMENTO_ENVIOS.csv
+${pathPDF}          C:\\workspace\\green\\resources\\PDF
+        
 
 *** Tasks ***
 RPA Green
-    ${results}        Get Atendimento Banco    #Busca os dados no banco
+    ${results}        Get Conta Banco    #Busca os dados no banco
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
     END
 
-    #${cdAtendimento}    Set Variable    5157868
-    #${nrConta}    Set Variable    22868146 
-
-
     #Abrir navegador e acessar a tela
-    Logar e Acessar a tela 
+    Logar e Acessar a tela    M_LAN_HOS   Conta Hospitalar    
         
     FOR  ${robot}     IN    @{results}
         #Pegando numero da conta e atendimento
@@ -39,16 +36,21 @@ RPA Green
         Log    ${cdAtendimento}
 
 
-        ${statusCSV}=     read csv file    ${pathMain}    ${nrConta}
+        ${statusCSV}=     read csv file    ${pathCSV}    ${nrConta}
         Log    ${statusCSV}
         Log To Console    read csv file
         
         IF    ${statusCSV}    CONTINUE
         
         # Valida Pesquisa Atendimento
-        Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
+        ${statusValidaAtendimeto}    Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
 
-        ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
+        IF    "${statusValidaAtendimeto}"=="FAILD"
+            Logar e Acessar a tela    M_LAN_HOS   Conta Hospitalar
+        END
+
+
+        ${statusPesquisaAtendimeto}=    Pesquisa Atendimento conta    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD"    CONTINUE
         
@@ -65,7 +67,59 @@ RPA Green
         IF    "${statusDownload}"=="FAILD"    CONTINUE
 
         IF    "${statusDownload}"=="OK"
-            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}
+            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}
+            Pagina Relatorio
+            IF    "${statusIntegra}"=="FAILD"    CONTINUE
+        END
+
+    END
+    
+
+RPA Green Atendimento
+    ${results}        Get Atendimento Banco    #Busca os dados no banco
+ 
+    IF    "${results}"=="False"
+        Skip    Consulta nao retornou dados.
+    END
+
+    #Abrir navegador e acessar a tela
+    Logar e Acessar a tela    M_LAN_AMB   Conta Atendimento
+        
+    FOR  ${robot}     IN    @{results}
+        #Pegando numero da conta e atendimento
+        ${cdAtendimento}    Set Variable    ${robot}[2]
+
+        IF    ${cdAtendimento}==None    CONTINUE
+
+        Log    ${cdAtendimento}
+
+
+        ${statusCSV}=     read csv atendimento file    ${pathCSV}    ${cdAtendimento}
+        Log    ${statusCSV}
+        Log To Console    read csv file
+        
+        IF    ${statusCSV}    CONTINUE
+        
+        # Valida Pesquisa Atendimento
+        ${statusValidaAtendimeto}    Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
+
+        IF    "${statusValidaAtendimeto}"=="FAILD"
+            Logar e Acessar a tela    M_LAN_AMB   Conta Atendimento
+        END
+
+        ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
+
+        IF    "${statusPesquisaAtendimeto}"=="FAILD"    CONTINUE
+        
+        
+        #Realiza o download do relatorio
+        ${statusDownload}=    Download do relatorio de atendimento   ${cdAtendimento}   ${pathMain}
+        Log    ${statusDownload}
+
+        IF    "${statusDownload}"=="FAILD"    CONTINUE
+        ${nrConta}    Set Variable    0000
+        IF    "${statusDownload}"=="OK"
+            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}
             Pagina Relatorio
             IF    "${statusIntegra}"=="FAILD"    CONTINUE
         END

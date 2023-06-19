@@ -104,7 +104,7 @@ Page
 
 
 WorkflowItem
-    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}
+    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}
     Log To Console    Request WorkFlow
     
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\work.json
@@ -128,7 +128,7 @@ WorkflowItem
     ${validateCode}    Run Keyword And Return Status    Status Should Be    201
 
     IF    (${validateStatus} and ${validateCode}) == ${True}
-        Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathMain}\\resources\\CSV    ${True}
+        Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}    ${True}
         Log To Console    Integração foi realizada
     ELSE
         Log    Integração não foi realizada
@@ -137,7 +137,7 @@ WorkflowItem
 
 
 Integração WebService
-    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}
 
     TRY
         # Conecta web service
@@ -153,7 +153,7 @@ Integração WebService
         # Envia arquivo web service
         ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
 
-        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}
+        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}    ${pathCSV}
 
     EXCEPT
         Log     Falha ao integrar Green

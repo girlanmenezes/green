@@ -9,6 +9,9 @@ tasks:
   Run RPA Green:
     robotTaskName: RPA Green
 
+  Run RPA Green Atendimento:
+    robotTaskName: RPA Green Atendimento
+
 condaConfigFile: conda.yaml
 
 environmentConfigs:

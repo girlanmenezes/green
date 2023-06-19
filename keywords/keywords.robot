@@ -70,6 +70,7 @@ ${XpathTxtAtendimento}              xpath=//*[@id='inp:cdAtendimento']
 ${XpathBtnExecutar}                 xpath=//a[@title='Executar Consulta']
 ${XpathBtnProcurar}                 xpath=//a[@title='Procurar']
 ${XpathTblContasCell1Col1}          xpath=//div[@class='slick-cell b0 f0 selected']
+${XpathTb}                          xpath=//div[@class='slick-cell b0 f0 selected ui-fixed-width']
 ${IdBtnRelatorio}                   id=btnImprimir
 ${BotaoAlertaNao}                   xpath=//button[contains(text(),"não")]
 ${BotaoAlertaOk}                    xpath=//button[contains(text(),"Ok")]
@@ -87,13 +88,14 @@ ${Notifications}                xpath=//*[@id='notifications']
 
 *** Keywords ***
 Logar e Acessar a tela
+    [Arguments]    ${tela}    ${nomeItem}
     TRY
         Kill Process    chrome.exe
         Kill Process    chrome-custom.exe
 
         Sleep     5s
         Nova sessao
-        Acessar a tela pela busca |M_LAN_HOS||Conta Hospitalar|
+        Acessar a tela pela busca |${tela}||${nomeItem}|
     EXCEPT
         Skip    Sistema Indisponivel
     END
@@ -103,7 +105,7 @@ Executar a pesquisa
 
 Click no Item
     [Arguments]    ${elemento}
-    Wait Until Element Is Visible    ${elemento}    120
+    Wait Until Element Is Visible    ${elemento}    10
     Sleep    1
     Click Element    ${elemento}
     Sleep    1
@@ -154,17 +156,8 @@ Download do relatorio
         ${pdfUrl}    Get Location    # Pega url do relatório pdf
 
         # Remove arquivo antigo
-        ${files}    RPA.FileSystem.List Files In Directory    ${pathMain}\\resources\\PDF
-        ${fileCount}    Get Length    ${files}
-
-        IF    ${fileCount} == ${1}
-            ${files}    Convert To String    ${files}
-            ${attrFile}    Split String    ${files}    ,
-            ${fileName}    Replace String    ${attrFile}[1]    name='    ${EMPTY}
-            ${fileName}    Replace String    ${fileName}    '    ${EMPTY}
-            ${fileName}    Set Variable    ${fileName.strip()}
-            OperatingSystem.Remove File    ${pathMain}\\resources\\PDF\\${fileName}
-        END
+        Run Keyword And Ignore Error    RPA.FileSystem.Empty Directory    ${pathMain}\\resources\\PDF
+        
 
         Download    ${pdfUrl}    target_file=${pathMain}\\resources\\PDF    # Realiza download do relatório
 
@@ -179,6 +172,76 @@ Download do relatorio
         ${newFileName}    Set Variable    ${date}.pdf
         Log     ${newFileName}
         RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${newFileName}
+        Sleep    5s
+
+        Log    Relatorio Gerado com Sucesso
+        RETURN    OK
+    EXCEPT
+        Log    Erro ao realizar download do relatorio Atendimento: ${cdAtendimento}
+        RETURN    FAILD
+    END
+
+Download do relatorio de atendimento
+    [Arguments]    ${cdAtendimento}   ${pathMain}
+    TRY
+        Log To Console    Download Relatorio
+        # Imprime relatório
+        Click Element    ${IdBtnRelatorio}
+
+        ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
+
+        IF    ${msgInfoVisible} == ${True}    
+            Run Keyword And Ignore Error    Click Element    ${XpathMsgInfoBtnSim}
+            Run Keyword And Ignore Error    Click Element    ${XpathMsgInfoBtnOK}
+        END
+
+        Run Keyword And Ignore Error    Clear Element Text    ${IdCboSaidaRelatorio}
+        Seleciona Item Combobox    ${IdCboSaidaRelatorio}    Tela
+        Click Element    ${XpathBtnImprimir}
+
+        Sleep    2
+
+        # Verifica se alguma mensagem de informação foi apresentada
+        ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    10
+
+        IF    ${msgInfoVisible} == ${True}    
+            Run Keyword And Ignore Error    Click Element    ${XpathMsgInfoBtnSim}
+            Run Keyword And Ignore Error    Click Element    ${XpathMsgInfoBtnOK}
+        END
+        # Aguarda a aba do navegador com o relatório ser carregada
+        ${countTabs}    Set Variable    ${1}
+        ${count}    Set Variable    ${0}
+
+        WHILE    ${countTabs} == ${1}
+            Sleep    1
+            ${tabs}    Get Window Titles
+            ${countTabs}    Get Length    ${tabs}
+            ${count}    Evaluate    ${count} + 1
+
+            # Realiza 30 tentativas durante pouco mais de 30 segundos
+            IF    ${count} == ${120}    Fail    Guia do relatório não foi carregada
+        END
+
+        Switch Window    NEW    # Seleciona aba do relatório
+        ${pdfUrl}    Get Location    # Pega url do relatório pdf
+
+        # Remove arquivo antigo
+        Run Keyword And Ignore Error    RPA.FileSystem.Empty Directory    ${pathMain}\\resources\\PDF
+        
+
+        Download    ${pdfUrl}    target_file=${pathMain}\\resources\\PDF    # Realiza download do relatório
+
+        # Renomeio o arquivo
+        ${date}    Get Current Date    result_format=%d%m%Y%H%M%S
+        ${fileName}    Split String    ${pdfUrl}    /
+        Log    ${fileName}
+        ${lastPosition}    Get Length    ${fileName}
+        Log    ${lastPosition} 
+        ${lastPosition}    Evaluate    ${lastPosition}-1
+        # ${newFileName}    Replace String    ${fileName}[${lastPosition}]    .pdf    _${date}.pdf
+        ${newFileName}    Set Variable    ${date}.pdf
+        Log     ${newFileName}
+        RPA.FileSystem.Move File    ${pathMain}\\resources\\PDF\\${fileName}[${lastPosition}]    ${pathMain}\\resources\\PDF\\${cdAtendimento}${newFileName}
         Sleep    5s
 
         Log    Relatorio Gerado com Sucesso
@@ -429,7 +492,7 @@ Valida tela de pesquisa atendimento
         RETURN    OK 
     EXCEPT
         Log    Falha ao entrar no relatorio
-        Logar e Acessar a tela
+        RETURN    FAILD 
     END
 
     
@@ -469,7 +532,7 @@ Get Value nrConta
 #${Result}=     Run Keyword And Return Status     Page Should Contain Element  ${Xpath} 
 
 
-Pesquisa Atendimento
+Pesquisa Atendimento conta
     [Arguments]    ${cdAtendimento}
     TRY
         Sleep     5s
@@ -480,6 +543,24 @@ Pesquisa Atendimento
             
         # Seleciona conta
         ${dadosAtendimento}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathTblContasCell1Col1}    120
+        Log To Console     ${dadosAtendimento}
+        RETURN    OK
+    EXCEPT
+        Log    Erro ao pesquisar o atendimento
+        RETURN    FAILD
+    END
+    
+Pesquisa Atendimento
+    [Arguments]    ${cdAtendimento}
+    TRY
+        Sleep     5s
+        Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
+        Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
+        Click Element    ${XpathBtnExecutar}
+        Sleep     5s    
+            
+        # Seleciona conta
+        ${dadosAtendimento}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathTb}    120
         Log To Console     ${dadosAtendimento}
         RETURN    OK
     EXCEPT

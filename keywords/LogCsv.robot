@@ -13,15 +13,16 @@ Log CSV
     # Verifica se já existe o arquivo RELATORIO_ENVIOS.csv
     ${createdCsv}    Run Keyword And Return Status
     ...    File Should Exist
-    ...    ${pathCsv}\\RELATORIO_ENVIOS.csv
+    ...    ${pathCsv}
 
     # Cria arquivo se não existir
     IF    ${createdCsv} != ${True}
-        RPA.FileSystem.Create File    ${pathCsv}\\RELATORIO_ENVIOS.csv
+        RPA.FileSystem.Create File    ${pathCsv}
         RPA.FileSystem.Append To File
-        ...    ${pathCsv}\\RELATORIO_ENVIOS.csv
+        ...    ${pathCsv}
         ...    cod_atendimento,nr_conta,arquivo,data_envio,status_envio,msg_envio\n
     END
+
 
     # Cria novo registo
     IF    ${status}
@@ -31,4 +32,4 @@ Log CSV
     END
 
     # Adiciona novo registro ao arquivo
-    RPA.FileSystem.Append To File    ${pathCsv}\\RELATORIO_ENVIOS.csv   ${csvData}\n
+    RPA.FileSystem.Append To File    ${pathCsv}   ${csvData}\n
