@@ -94,7 +94,7 @@ RPA Green Atendimento
         Log    ${cdAtendimento}
 
 
-        ${statusCSV}=     read csv atendimento file    ${pathCSV}    ${cdAtendimento}
+        ${statusCSV}=     read csv atendimento file    ${pathCSVat}    ${cdAtendimento}
         Log    ${statusCSV}
         Log To Console    read csv file
         
@@ -119,7 +119,7 @@ RPA Green Atendimento
         IF    "${statusDownload}"=="FAILD"    CONTINUE
         ${nrConta}    Set Variable    0000
         IF    "${statusDownload}"=="OK"
-            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}
+            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSVat}
             Pagina Relatorio
             IF    "${statusIntegra}"=="FAILD"    CONTINUE
         END
