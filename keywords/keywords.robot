@@ -32,7 +32,7 @@ ${btnExecutar}                      xpath=//li[@id='toolbar']//li[@id='tb-execut
 ${so}                               windows
 ${browser}                          chrome
 ${ambiente}                         qarelease
-${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
+#${url}                              http://prdmvcr2.adhosp.com.br/mvautenticador-cas/login
 #${url}                               http://hmlerpmvcr2.adhosp.com.br:81/soul-mv/ 517789
 ${nrContaSistema}
 #Portable
@@ -45,8 +45,8 @@ ${options}                           binary_location="C:\\Program Files\\Google\
 #${dadosLoginUsuarioQaRelease}       RPA_CONTA
 #${dadosLoginSenhaQaRelease}         12345678
 
-${dadosLoginUsuarioQaRelease}       TIRPAWATI
-${dadosLoginSenhaQaRelease}         TIRPAWATI
+#${dadosLoginUsuarioQaRelease}       TIRPAWATI
+#${dadosLoginSenhaQaRelease}         TIRPAWATI
 
 ${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
 
@@ -364,8 +364,8 @@ Realiza Login
     Wait Until Element Is Visible    ${PageIdTxtUsuario}    120    error=Erro ao efetuar o login
     Sleep    2
     Wait Until Element Is Not Visible    ${PageClassImgLoading}    120    error=Erro ao efetuar o login
-    Input Text    ${PageIdTxtUsuario}    ${usuario}
-    Input Text    ${PageIdTxtSenha}    ${senha}
+    Input Text    ${PageIdTxtUsuario}    ${usuario} 
+    Input Text    ${PageIdTxtSenha}    ${senha} 
     Select From List By Label    ${PageIdSelectEmpresa}    ${empresa}
     # Capture Page Screenshot
     Click Button    ${PageIdBtnLogin}
@@ -373,13 +373,11 @@ Realiza Login
     Sleep    2
 
 Nova sessao
-    ${url}    Set Variable If    %{DRY_RUN=${True}} == ${True}    ${url}    ${QA_ENVIROMENT}
-
-    Log    *** Teste QA Environment: ${url}
+    Log    *** Teste QA Environment: ${URL_AMBIENTE}
     Log    *** Teste no Sistema Operacional: ${so}
     Log To Console    *** Teste no Sistema Operacional: ${so}
 
-    Open Browser    ${url}    ${browser}    options=${options}
+    Open Browser    ${URL_AMBIENTE}   ${browser}    options=${options}
     #Add Cookie    las-uuid    2a603126-6068-4cfb-a00f-b79d6a7adc6d
     Add Cookie    las-uuid    6491a899-2e53-4484-a0d3-76bf432bcd70
     Add Cookie    las-host    http://127.0.0.1:32768
@@ -388,7 +386,7 @@ Nova sessao
     Sleep    5s
     Log To Console     ABERTURA DO NAVEGADOR
 
-    Realiza Login    ${dadosLoginUsuarioQaRelease}    ${dadosLoginSenhaQaRelease}    ${dadosLoginEmpresaQaRelease}
+    Realiza Login    ${USER}    ${SENHA}    ${dadosLoginEmpresaQaRelease}
 
 Criar Lista Itens Menu Xpath com Index
     [Arguments]    @{listaItensMenu}

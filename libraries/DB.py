@@ -3,9 +3,9 @@ import datetime
 #from ..resources.variables import TODAY, RETROATIVA
 
 class DB:
-    def get_conta_banco(self):
+    def get_conta_banco(self, day):
         date_now = datetime.datetime.now()
-        date_retroativa = date_now - datetime.timedelta(days=30)
+        date_retroativa = date_now - datetime.timedelta(days=day)
 
         TODAY = date_now.strftime("%d/%m/%Y")
         RETROATIVA = date_retroativa.strftime("%d/%m/%Y")
@@ -23,9 +23,9 @@ class DB:
 
         return results
 
-    def get_atendimento_banco(self):
+    def get_atendimento_banco(self, day):
         date_now = datetime.datetime.now()
-        date_retroativa = date_now - datetime.timedelta(days=30)
+        date_retroativa = date_now - datetime.timedelta(days=day)
 
         TODAY = date_now.strftime("%d/%m/%Y")
         RETROATIVA = date_retroativa.strftime("%d/%m/%Y")

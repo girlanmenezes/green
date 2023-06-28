@@ -6,7 +6,7 @@ Library             ReadCSV
 Library             DB
 Resource            Keywords.robot
 Resource            Requestkeywords.robot
-
+Resource            Request.robot
 *** Variables ***
 ${pathMain}         C:\\workspace\\green    # Path raiz do projeto
 ${pathCSV}          C:\\workspace\\green\\resources\\CSV\\RELATORIO_ENVIOS.csv
@@ -16,7 +16,11 @@ ${pathPDF}          C:\\workspace\\green\\resources\\PDF
 
 *** Tasks ***
 RPA Green
-    ${results}        Get Conta Banco    #Busca os dados no banco
+    ${data}    Get info
+    IF    "${data}"=="FAILD"
+        Skip    Erro ao consultar RPA.
+    END
+    ${results}        Get Conta Banco    ${DIAS_RETROATIVOS}    #Busca os dados no banco
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
@@ -76,7 +80,12 @@ RPA Green
     
 
 RPA Green Atendimento
-    ${results}        Get Atendimento Banco    #Busca os dados no banco
+    ${data}    Get info
+    IF    "${data}"=="FAILD"
+        Skip    Erro ao consultar RPA.
+    END
+
+    ${results}        Get Atendimento Banco    ${DIAS_RETROATIVOS}    #Busca os dados no banco
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
@@ -126,4 +135,4 @@ RPA Green Atendimento
 
     END
     
-    # rcc run --task "Run RPA Green"
+    # rcc run --task "Run all tasks"
