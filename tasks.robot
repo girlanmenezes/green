@@ -77,6 +77,8 @@ RPA Green
         END
 
     END
+
+    Atualizar results    SUCCESS
     
 
 RPA Green Atendimento
@@ -134,5 +136,7 @@ RPA Green Atendimento
         END
 
     END
+
+    Atualizar results    SUCCESS
     
     # rcc run --task "Run all tasks"
