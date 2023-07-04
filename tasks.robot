@@ -59,7 +59,7 @@ RPA Green
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento conta    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD" 
-            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
+            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
             CONTINUE
         END
         
@@ -67,7 +67,7 @@ RPA Green
         ${statusBuscaGrid}=    Buscar Conta no Grid    ${nrConta}
        
         IF    "${statusBuscaGrid}"=="FAILD" 
-            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
+            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
             CONTINUE
         END
 
@@ -76,7 +76,7 @@ RPA Green
         Log    ${statusDownload}
 
         IF    "${statusDownload}"=="FAILD" 
-            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
+            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
             CONTINUE
         END
 
@@ -111,7 +111,7 @@ RPA Green Atendimento
         ${cdAtendimento}    Set Variable    ${robot}[2]
 
         IF    ${cdAtendimento}==None    CONTINUE
-        ${nrConta}    Set Variable    ${EMPTY}
+        ${nrConta}    Set Variable    ${null}
         Log    ${cdAtendimento}    console=True
 
         ${statusCSV}=     read csv atendimento file    ${pathCSVat}    ${cdAtendimento}
@@ -132,7 +132,7 @@ RPA Green Atendimento
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD"    
-            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error  
+            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error  
             CONTINUE
         END
         
@@ -141,7 +141,7 @@ RPA Green Atendimento
         Log    ${statusDownload}
 
         IF    "${statusDownload}"=="FAILD"    
-            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error 
+            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error 
             CONTINUE
         END
 

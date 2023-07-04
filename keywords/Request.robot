@@ -113,7 +113,7 @@ Busca Atendimento
         ...    atendimento=${cdAtendimento}
         ...    conta=${nrConta}
         ...    tela=${tela}
-        ...    status="pending"
+        ...    status=pending
         ...    dataExecucao=${date}
 
 
@@ -144,6 +144,8 @@ Atualiza Atendimento
 
         Create Session    tokenS    ${URL_RPA}
 
+        ${date}    Get Current Date
+
         ${headers}    Create Dictionary
         ...    Authorization=Bearer ${token}
         
@@ -152,6 +154,7 @@ Atualiza Atendimento
         ...    conta=${nrConta}
         ...    tela=${tela}
         ...    status=${status} 
+        ...    dataExecucao=${date}
 
 
             
@@ -168,5 +171,4 @@ Atualiza Atendimento
 
     EXCEPT
         Log    Atualização do atendimento: ${cdAtendimento} não realizada    console=True
-        RETURN FAILD 
     END
