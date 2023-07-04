@@ -165,9 +165,8 @@ Atualiza Atendimento
 
         Log    ${RESPONSE.json()}
 
-        ${validateStatus}    Run Keyword And Return Status    Request Should Be Successful
-        IF    ${validateStatus}    == ${True}:
-            Log     Atualização realizada com sucesso    console=True
+        Request Should Be Successful
+        Log     Atualização realizada com sucesso:/${cdAtendimento}     console=True
 
     EXCEPT
         Log    Atualização do atendimento: ${cdAtendimento} não realizada    console=True
