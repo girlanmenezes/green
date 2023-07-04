@@ -37,3 +37,5 @@ class ReadCSV():
                     return True
             print("não Existe na tabela")
             return False
+        
+  

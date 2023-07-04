@@ -41,9 +41,11 @@ RPA Green
 
 
         ${statusCSV}=     read csv file    ${pathCSV}    ${nrConta}
-        Log    ${statusCSV}
-        Log To Console    read csv file
-        
+        Log To Console    Lendo o CS Conta:${nrConta}
+
+        ${buscaAtendimento}=    Busca Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS
+        IF    ${buscaAtendimento}    CONTINUE
+
         IF    ${statusCSV}    CONTINUE
         
         # Valida Pesquisa Atendimento
@@ -56,22 +58,30 @@ RPA Green
 
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento conta    ${cdAtendimento} 
 
-        IF    "${statusPesquisaAtendimeto}"=="FAILD"    CONTINUE
-        
+        IF    "${statusPesquisaAtendimeto}"=="FAILD" 
+            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
+            CONTINUE
+        END
         
         #Busca conta no griD e aciona o checkbox de imprimir
         ${statusBuscaGrid}=    Buscar Conta no Grid    ${nrConta}
        
-        IF    "${statusBuscaGrid}"=="FAILD"    CONTINUE
-        
+        IF    "${statusBuscaGrid}"=="FAILD" 
+            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
+            CONTINUE
+        END
+
         #Realiza o download do relatorio
         ${statusDownload}=    Download do relatorio   ${cdAtendimento}    ${nrConta}    ${pathMain}
         Log    ${statusDownload}
 
-        IF    "${statusDownload}"=="FAILD"    CONTINUE
+        IF    "${statusDownload}"=="FAILD" 
+            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error   
+            CONTINUE
+        END
 
         IF    "${statusDownload}"=="OK"
-            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}
+            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}    M_LAN_HOS
             Pagina Relatorio
             IF    "${statusIntegra}"=="FAILD"    CONTINUE
         END
@@ -101,14 +111,15 @@ RPA Green Atendimento
         ${cdAtendimento}    Set Variable    ${robot}[2]
 
         IF    ${cdAtendimento}==None    CONTINUE
-
-        Log    ${cdAtendimento}
-
+        ${nrConta}    Set Variable    ${EMPTY}
+        Log    ${cdAtendimento}    console=True
 
         ${statusCSV}=     read csv atendimento file    ${pathCSVat}    ${cdAtendimento}
-        Log    ${statusCSV}
-        Log To Console    read csv file
-        
+        Log To Console    Lendo o CSV atendimento:${cdAtendimento}
+
+        ${buscaAtendimento}=    Busca Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB
+
+        IF    ${buscaAtendimento}    CONTINUE
         IF    ${statusCSV}    CONTINUE
         
         # Valida Pesquisa Atendimento
@@ -120,17 +131,23 @@ RPA Green Atendimento
 
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
 
-        IF    "${statusPesquisaAtendimeto}"=="FAILD"    CONTINUE
-        
+        IF    "${statusPesquisaAtendimeto}"=="FAILD"    
+            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error  
+            CONTINUE
+        END
         
         #Realiza o download do relatorio
         ${statusDownload}=    Download do relatorio de atendimento   ${cdAtendimento}   ${pathMain}
         Log    ${statusDownload}
 
-        IF    "${statusDownload}"=="FAILD"    CONTINUE
-        ${nrConta}    Set Variable    0000
+        IF    "${statusDownload}"=="FAILD"    
+            Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error 
+            CONTINUE
+        END
+
+        
         IF    "${statusDownload}"=="OK"
-            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSVat}
+            ${statusIntegra}    Integração WebService     ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSVat}    M_LAN_AMB
             Pagina Relatorio
             IF    "${statusIntegra}"=="FAILD"    CONTINUE
         END
@@ -140,3 +157,4 @@ RPA Green Atendimento
     Atualizar results    SUCCESS
     
     # rcc run --task "Run all tasks"
+

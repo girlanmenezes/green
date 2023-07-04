@@ -93,5 +93,80 @@ Atualizar results
         Request Should Be Successful
         Status Should Be    200
     EXCEPT
-        Log    Falha ao atualizar results
+        Log    Falha ao atualizar results    console=True
+    END
+
+
+Busca Atendimento
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}  
+    TRY
+        ${token}=    Connection Token
+
+        Create Session    tokenS    ${URL_RPA}
+
+        ${date}    Get Current Date
+
+        ${headers}    Create Dictionary
+        ...    Authorization=Bearer ${token}
+        
+        ${body}    Create Dictionary
+        ...    atendimento=${cdAtendimento}
+        ...    conta=${nrConta}
+        ...    tela=${tela}
+        ...    status="pending"
+        ...    dataExecucao=${date}
+
+
+            
+        ${RESPONSE}    POST On Session    tokenS
+        ...    /atendimentoConta
+        ...    headers=${headers}
+        ...    json=${body}
+
+        Log    ${RESPONSE.json()}
+
+        ${msgJson}    Get value from JSON    ${RESPONSE.json()}    $.mensagem
+        ${statusJson}    Get value from JSON    ${RESPONSE.json()}    $.status
+
+        Log     ${msgJson}-${cdAtendimento}/${nrConta}    console=True
+
+        RETURN    ${statusJson}
+    EXCEPT
+        Log    Busca de atendimento/conta:${cdAtendimento}/${nrConta} não realizada    console=True
+        RETURN    ${True} 
+    END
+
+
+Atualiza Atendimento
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}     ${status} 
+    TRY
+        ${token}=    Connection Token
+
+        Create Session    tokenS    ${URL_RPA}
+
+        ${headers}    Create Dictionary
+        ...    Authorization=Bearer ${token}
+        
+        ${body}    Create Dictionary
+        ...    atendimento=${cdAtendimento}
+        ...    conta=${nrConta}
+        ...    tela=${tela}
+        ...    status=${status} 
+
+
+            
+        ${RESPONSE}    PUT On Session    tokenS
+        ...    /atendimentoConta
+        ...    headers=${headers}
+        ...    json=${body}
+
+        Log    ${RESPONSE.json()}
+
+        ${validateStatus}    Run Keyword And Return Status    Request Should Be Successful
+        IF    ${validateStatus}    == ${True}:
+            Log     Atualização realizada com sucesso    console=True
+
+    EXCEPT
+        Log    Atualização do atendimento: ${cdAtendimento} não realizada    console=True
+        RETURN FAILD 
     END

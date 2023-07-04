@@ -10,7 +10,7 @@ Library             OperatingSystem
 Library             DateTime
 Variables           variables.py
 Resource            Keywords.robot
-
+Resource            Request.robot
 Resource            Pdf.robot
 Resource            LogCsv.robot
 
@@ -104,7 +104,7 @@ Page
 
 
 WorkflowItem
-    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}
+    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}    ${tela}
     Log To Console    Request WorkFlow
     
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\work.json
@@ -129,9 +129,11 @@ WorkflowItem
 
     IF    (${validateStatus} and ${validateCode}) == ${True}
         Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}    ${True}
-        Log To Console    Integração foi realizada
+        Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    ${tela}     success 
+        Log    Integração foi realizada com atendiment: ${cdAtendimento}    console=True
     ELSE
-        Log    Integração não foi realizada
+        Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    ${tela}     error
+        Log    Integração não foi realizada com atendiment: ${cdAtendimento}    console=True
     END
 
 
