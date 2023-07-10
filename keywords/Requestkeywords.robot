@@ -139,7 +139,7 @@ WorkflowItem
 
 
 Integração WebService
-    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}    ${tela}
 
     TRY
         # Conecta web service
@@ -155,7 +155,7 @@ Integração WebService
         # Envia arquivo web service
         ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
 
-        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}    ${pathCSV}
+        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}    ${pathCSV}    ${tela}
 
     EXCEPT
         Log     Falha ao integrar Green
