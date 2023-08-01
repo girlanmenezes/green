@@ -109,6 +109,10 @@ Busca Atendimento
         ${headers}    Create Dictionary
         ...    Authorization=Bearer ${token}
         
+        IF    "${tela}"=="M_LAN_AMB"
+            ${nrConta}=    Set Variable    ${null}
+        END
+        
         ${body}    Create Dictionary
         ...    atendimento=${cdAtendimento}
         ...    conta=${nrConta}
@@ -149,6 +153,10 @@ Atualiza Atendimento
         ${headers}    Create Dictionary
         ...    Authorization=Bearer ${token}
         
+        IF    "${tela}"=="M_LAN_AMB"
+            ${nrConta}=    Set Variable    ${null}
+        END
+
         ${body}    Create Dictionary
         ...    atendimento=${cdAtendimento}
         ...    conta=${nrConta}

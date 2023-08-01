@@ -52,7 +52,7 @@ Document
     ${name}    Set Variable    ${uuid}
     ${body_json}    Update value to JSON    ${body_json}    $..name      ${name}
     ${body_json}    Update value to JSON    ${body_json}    $..field2    ${cdAtendimento}
-    ${body_json}    Update value to JSON    ${body_json}    $..field3    ${nrConta}
+    ${body_json}    Update value to JSON    ${body_json}    $..field5    ${nrConta}
 
     Log    ${body_json}
 

@@ -39,9 +39,9 @@ RPA Green
         Log    ${nrConta}
         Log    ${cdAtendimento}
 
-
         ${statusCSV}=     read csv file    ${pathCSV}    ${nrConta}
         Log To Console    Lendo o CS Conta:${nrConta}
+
 
         ${buscaAtendimento}=    Busca Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS
         IF    ${buscaAtendimento}    CONTINUE
@@ -109,9 +109,9 @@ RPA Green Atendimento
     FOR  ${robot}     IN    @{results}
         #Pegando numero da conta e atendimento
         ${cdAtendimento}    Set Variable    ${robot}[2]
-
+        ${nrConta}          Set Variable    ${robot}[9]
         IF    ${cdAtendimento}==None    CONTINUE
-        ${nrConta}    Set Variable    ${null}
+        
         Log    ${cdAtendimento}    console=True
 
         ${statusCSV}=     read csv atendimento file    ${pathCSVat}    ${cdAtendimento}
