@@ -72,6 +72,7 @@ ${XpathBtnProcurar}                 xpath=//a[@title='Procurar']
 ${XpathTblContasCell1Col1}          xpath=//div[@class='slick-cell b0 f0 selected']
 ${XpathTb}                          xpath=//div[@class='slick-cell b0 f0 selected ui-fixed-width']
 ${IdBtnRelatorio}                   id=btnImprimir
+${IdbtnImprCtaFaturada}             id=btnImprCtaFaturada
 ${BotaoAlertaNao}                   xpath=//button[contains(text(),"não")]
 ${BotaoAlertaOk}                    xpath=//button[contains(text(),"Ok")]
 
@@ -110,13 +111,21 @@ Click no Item
     Click Element    ${elemento}
     Sleep    1
 
+
+Clicar botão imprimir relatorio
+    ${btnRelatorio}    Run Keyword And Return Status    Click Element    ${IdBtnRelatorio}
+    IF    ${btnRelatorio} == ${False}    
+        Click Element    ${IdbtnImprCtaFaturada}
+    END
+
 Download do relatorio
     [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}
     # [Arguments]    ${cdAtendimento}    ${nrConta}    ${outputReport}
     TRY
         Log To Console    Download Relatorio
         # Imprime relatório
-        Click Element    ${IdBtnRelatorio}
+        Clicar botão imprimir relatorio
+        #Click Element    ${IdBtnRelatorio}
 
         ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
 
@@ -186,7 +195,8 @@ Download do relatorio de atendimento
     TRY
         Log To Console    Download Relatorio
         # Imprime relatório
-        Click Element    ${IdBtnRelatorio}
+        Clicar botão imprimir relatorio
+        #Click Element    ${IdBtnRelatorio}
 
         ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
 
