@@ -124,8 +124,8 @@ Download do relatorio
     TRY
         Log To Console    Download Relatorio
         # Imprime relatório
-        Clicar botão imprimir relatorio
-        #Click Element    ${IdBtnRelatorio}
+        #Clicar botão imprimir relatorio
+        Click Element    ${IdBtnRelatorio}
 
         ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
 
@@ -195,8 +195,8 @@ Download do relatorio de atendimento
     TRY
         Log To Console    Download Relatorio
         # Imprime relatório
-        Clicar botão imprimir relatorio
-        #Click Element    ${IdBtnRelatorio}
+        #Clicar botão imprimir relatorio
+        Click Element    ${IdBtnRelatorio}
 
         ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
 
