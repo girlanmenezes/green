@@ -69,6 +69,7 @@ ${EMPTY}
 ${XpathTxtAtendimento}              xpath=//*[@id='inp:cdAtendimento']
 ${XpathBtnExecutar}                 xpath=//a[@title='Executar Consulta']
 ${XpathBtnProcurar}                 xpath=//a[@title='Procurar']
+${btnCancelaRetornar}                 xpath=//*[@id="btnCancela1"]
 ${XpathTblContasCell1Col1}          xpath=//div[@class='slick-cell b0 f0 selected']
 ${XpathTb}                          xpath=//div[@class='slick-cell b0 f0 selected ui-fixed-width']
 ${IdBtnRelatorio}                   id=btnImprimir
@@ -125,8 +126,6 @@ Download do relatorio
         Log To Console    Download Relatorio
         # Imprime relatório
         #Clicar botão imprimir relatorio
-
-        Wait Until Element Is Visible    ${IdBtnRelatorio}    120
         Click Element    ${IdBtnRelatorio}
 
         
@@ -200,9 +199,7 @@ Download do relatorio de atendimento
         Log To Console    Download Relatorio
         # Imprime relatório
         #Clicar botão imprimir relatorio
-
-        Wait Until Element Is Visible    ${IdBtnRelatorio}    120
-        
+       
         Click Element    ${IdBtnRelatorio}
 
         ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
@@ -496,19 +493,30 @@ Pagina Relatorio
 Valida tela de pesquisa atendimento
     [Arguments]    ${cdAtendimento}
     TRY
+        Log To Console    Valida tela de pesquisa atendimento
+        Sleep    3s
+        ${StatusError}    Run Keyword And Return Status    Page Should Contain    LOG_FALHA_IMPORTACAO
+
+        IF    ${StatusError}
+            Log To Console    Tela erro retornar
+            Click Element    ${btnCancelaRetornar}
+            Sleep    3s
+            Run Keyword And Ignore Error    Wait Until Element Is Visible     ${XpathBtnProcurar}
+            Run Keyword And Ignore Error    Click Element    ${XpathBtnProcurar}
+        END
+  
         Sleep    3s
         Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
         Wait Until Element Is Enabled    ${XpathTxtAtendimento}    120
         Sleep    1s
         Wait Until Keyword Succeeds    5x    6s    input text     ${XpathTxtAtendimento}   ${EMPTY}
-        Page Should Not Contain    LOG_FALHA_IMPORTACAO
         input text     ${XpathTxtAtendimento}   ${EMPTY}
         Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
         input text     ${XpathTxtAtendimento}   ${EMPTY}
 
         RETURN    OK 
     EXCEPT
-        Log    Falha ao entrar no relatorio
+        Log To Console    Falha Valida tela de pesquisa atendimento
         RETURN    FAILD 
     END
 
@@ -531,7 +539,7 @@ Buscar Conta no Grid
         END
         RETURN    OK 
     EXCEPT
-        Log    Erro ao buscar conta no grid
+        Log To Console    Erro ao buscar conta no grid
         RETURN    FAILD 
     END
 
@@ -543,7 +551,7 @@ Get Value nrConta
         ${nrContaSistema}   RPA.Browser.Selenium.Get Text    //*[@id="grdRegFat"]/div[4]/div[3]/div/div[${i}]/div[1]/div
         RETURN    ${nrContaSistema}
     EXCEPT
-        Log    Não Existe Conta
+        Log To Console     Não Existe Conta
     END
     
 #${Result}=     Run Keyword And Return Status     Page Should Contain Element  ${Xpath} 
@@ -552,6 +560,7 @@ Get Value nrConta
 Pesquisa Atendimento conta
     [Arguments]    ${cdAtendimento}
     TRY
+        Log To Console    Pesquisar o atendimento
         Sleep     5s
         Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
         Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
@@ -560,16 +569,17 @@ Pesquisa Atendimento conta
             
         # Seleciona conta
         ${dadosAtendimento}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathTblContasCell1Col1}    120
-        Log To Console     ${dadosAtendimento}
         RETURN    OK
     EXCEPT
-        Log    Erro ao pesquisar o atendimento
+        Log To Console   Erro ao pesquisar o atendimento
         RETURN    FAILD
     END
     
 Pesquisa Atendimento
     [Arguments]    ${cdAtendimento}
     TRY
+
+        Log To Console    Pesquisar o atendimento
         Sleep     5s
         Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
         Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
@@ -578,10 +588,9 @@ Pesquisa Atendimento
             
         # Seleciona conta
         ${dadosAtendimento}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathTb}    120
-        Log To Console     ${dadosAtendimento}
         RETURN    OK
     EXCEPT
-        Log    Erro ao pesquisar o atendimento
+        Log To Console    Erro ao pesquisar o atendimento
         RETURN    FAILD
     END
     

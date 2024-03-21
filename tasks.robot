@@ -39,7 +39,7 @@ RPA Green
         Log    ${nrConta}
         Log    ${cdAtendimento}
 
-        Log To Console    Lendo o CS Conta:${nrConta}
+        Log To Console    Processando Conta:${nrConta}
 
 
         ${buscaAtendimento}=    Busca Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS
@@ -112,7 +112,7 @@ RPA Green Atendimento
         
         Log    ${cdAtendimento}    console=True
 
-        Log To Console    Lendo o CSV atendimento:${cdAtendimento}
+        Log To Console    Processamdp Atemdo,emtp atendimento:${cdAtendimento}
 
         ${buscaAtendimento}=    Busca Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB
 
