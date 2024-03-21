@@ -506,11 +506,9 @@ Valida tela de pesquisa atendimento
             Run Keyword And Ignore Error    Click Element    ${XpathBtnProcurar}
         END
 
-        Run Keyword And Ignore Error    Wait Until Keyword Succeeds    5x    3s    input text     ${XpathidAtendimento}   ${EMPTY}
         Sleep    3s
-        Run Keyword And Ignore Error    Wait Until Keyword Succeeds    20x    3s    input text     ${XpathTxtAtendimento}   ${EMPTY}
-        input text     ${XpathTxtAtendimento}   ${EMPTY}
-        Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
+        Wait Until Keyword Succeeds    20x    3s    input text     ${XpathTxtAtendimento}   ${cdAtendimento}
+
         input text     ${XpathTxtAtendimento}   ${EMPTY}
 
         RETURN    OK 
