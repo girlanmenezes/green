@@ -125,7 +125,11 @@ Download do relatorio
         Log To Console    Download Relatorio
         # Imprime relatório
         #Clicar botão imprimir relatorio
+
+        Wait Until Element Is Visible    ${IdBtnRelatorio}    120
         Click Element    ${IdBtnRelatorio}
+
+        
 
         ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
 
@@ -196,6 +200,9 @@ Download do relatorio de atendimento
         Log To Console    Download Relatorio
         # Imprime relatório
         #Clicar botão imprimir relatorio
+
+        Wait Until Element Is Visible    ${IdBtnRelatorio}    120
+        
         Click Element    ${IdBtnRelatorio}
 
         ${msgInfoVisible}    Run Keyword And Return Status    Wait Until Element Is Visible    ${XpathMsgInfo}    120
@@ -497,6 +504,9 @@ Valida tela de pesquisa atendimento
         input text     ${XpathTxtAtendimento}   ${EMPTY}
         Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
         input text     ${XpathTxtAtendimento}   ${EMPTY}
+
+        Page Should Not Contain    LOG_FALHA_IMPORTACAO
+
         RETURN    OK 
     EXCEPT
         Log    Falha ao entrar no relatorio
