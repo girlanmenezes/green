@@ -67,6 +67,7 @@ ${EMPTY}
 
 # Elementos tela M_LAN_HOS - Download relatorio
 ${XpathTxtAtendimento}              xpath=//*[@id='inp:cdAtendimento']
+${XpathidAtendimento}               xpath=//*[@id="cdAtendimento"]
 ${XpathBtnExecutar}                 xpath=//a[@title='Executar Consulta']
 ${XpathBtnProcurar}                 xpath=//a[@title='Procurar']
 ${btnCancelaRetornar}                 xpath=//*[@id="btnCancela1"]
@@ -504,9 +505,10 @@ Valida tela de pesquisa atendimento
             Run Keyword And Ignore Error    Wait Until Element Is Visible     ${XpathBtnProcurar}
             Run Keyword And Ignore Error    Click Element    ${XpathBtnProcurar}
         END
-  
+
+        Run Keyword And Ignore Error    Wait Until Keyword Succeeds    5x    3s    input text     ${XpathidAtendimento}   ${EMPTY}
         Sleep    3s
-        Wait Until Keyword Succeeds    20x    3s    input text     ${XpathTxtAtendimento}   ${EMPTY}
+        Run Keyword And Ignore Error    Wait Until Keyword Succeeds    20x    3s    input text     ${XpathTxtAtendimento}   ${EMPTY}
         input text     ${XpathTxtAtendimento}   ${EMPTY}
         Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
         input text     ${XpathTxtAtendimento}   ${EMPTY}
