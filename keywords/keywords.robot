@@ -501,11 +501,10 @@ Valida tela de pesquisa atendimento
         Wait Until Element Is Enabled    ${XpathTxtAtendimento}    120
         Sleep    1s
         Wait Until Keyword Succeeds    5x    6s    input text     ${XpathTxtAtendimento}   ${EMPTY}
+        Page Should Not Contain    LOG_FALHA_IMPORTACAO
         input text     ${XpathTxtAtendimento}   ${EMPTY}
         Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
         input text     ${XpathTxtAtendimento}   ${EMPTY}
-
-        Page Should Not Contain    LOG_FALHA_IMPORTACAO
 
         RETURN    OK 
     EXCEPT
