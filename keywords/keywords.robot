@@ -506,10 +506,7 @@ Valida tela de pesquisa atendimento
         END
   
         Sleep    3s
-        Wait Until Element Is Visible    ${XpathTxtAtendimento}    120
-        Wait Until Element Is Enabled    ${XpathTxtAtendimento}    120
-        Sleep    1s
-        Wait Until Keyword Succeeds    5x    6s    input text     ${XpathTxtAtendimento}   ${EMPTY}
+        Wait Until Keyword Succeeds    20x    3s    input text     ${XpathTxtAtendimento}   ${EMPTY}
         input text     ${XpathTxtAtendimento}   ${EMPTY}
         Input Text    ${XpathTxtAtendimento}    ${cdAtendimento}
         input text     ${XpathTxtAtendimento}   ${EMPTY}
