@@ -39,14 +39,12 @@ RPA Green
         Log    ${nrConta}
         Log    ${cdAtendimento}
 
-        ${statusCSV}=     read csv file    ${pathCSV}    ${nrConta}
         Log To Console    Lendo o CS Conta:${nrConta}
 
 
         ${buscaAtendimento}=    Busca Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS
         IF    ${buscaAtendimento}    CONTINUE
 
-        IF    ${statusCSV}    CONTINUE
         
         # Valida Pesquisa Atendimento
         ${statusValidaAtendimeto}    Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
@@ -114,13 +112,12 @@ RPA Green Atendimento
         
         Log    ${cdAtendimento}    console=True
 
-        ${statusCSV}=     read csv atendimento file    ${pathCSVat}    ${cdAtendimento}
         Log To Console    Lendo o CSV atendimento:${cdAtendimento}
 
         ${buscaAtendimento}=    Busca Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB
 
         IF    ${buscaAtendimento}    CONTINUE
-        IF    ${statusCSV}    CONTINUE
+
         
         # Valida Pesquisa Atendimento
         ${statusValidaAtendimeto}    Valida tela de Pesquisa Atendimento    ${cdAtendimento} 
