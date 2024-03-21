@@ -18,6 +18,7 @@ Library             Processwindows
 ${QA_ENVIROMENT}                    Get Environment Variable    qaenviroment
 ${HomeXpathBtnMenu}                 xpath=//*[@class='mv-basico-menu dp32']
 ${HomeXpathInputPesquisa}           xpath=//input[@id='menu-filter-1']
+${cdPage}                           xpath=//*[@id="status"]/div/span[3]
 ${PageClassImgLoading}              class=las-progress-circular__half-circle
 ${PageIdTxtUsuario}                 id=username
 ${PageIdTxtSenha}                   id=password
@@ -496,7 +497,8 @@ Valida tela de pesquisa atendimento
     TRY
         Log To Console    Valida tela de pesquisa atendimento
         Sleep    3s
-        ${StatusError}    Run Keyword And Return Status    Page Should Contain    LOG_FALHA_IMPORTACAO
+        ${StatusError}    Run Keyword And Return Status    Element Should Contain    ${cdPage}    LOG_FALHA_IMPORTACAO
+
 
         IF    ${StatusError}
             Log To Console    Tela erro retornar
