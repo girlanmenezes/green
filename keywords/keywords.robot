@@ -503,9 +503,10 @@ Valida tela de pesquisa atendimento
         IF    ${StatusError}
             Log To Console    Tela erro retornar
             Click Element    ${btnCancelaRetornar}
-            Sleep    3s
+            Sleep    4s
             Run Keyword And Ignore Error    Wait Until Element Is Visible     ${XpathBtnProcurar}
             Run Keyword And Ignore Error    Click Element    ${XpathBtnProcurar}
+            Sleep    3s
         END
 
         Sleep    3s
