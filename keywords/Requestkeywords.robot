@@ -130,7 +130,7 @@ WorkflowItem
     IF    (${validateStatus} and ${validateCode}) == ${True}
         Log CSV     ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}    ${True}
         Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    ${tela}     success 
-        Log    Integração foi realizada com atendiment: ${cdAtendimento}    console=True
+        Log    Integração foi realizada com atendiment: ${cdAtendimento} : ${body_json}    console=True
     ELSE
         Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    ${tela}     error
         Log    Integração não foi realizada com atendiment: ${cdAtendimento}    console=True
