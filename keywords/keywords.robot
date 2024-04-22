@@ -41,7 +41,7 @@ ${nrContaSistema}
 #centos
 #${options}                           binary_location="C:\\CentBrowser\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
 #Chrome
-${options}                           binary_location="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
+${options}                           binary_location="C:\\Program Files\\Google\\chromewin\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
 
 #${dadosLoginUsuarioQaRelease}       RPA_CONTA
 #${dadosLoginSenhaQaRelease}         12345678
