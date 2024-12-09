@@ -386,7 +386,8 @@ Realiza Login
     Wait Until Element Is Visible    ${PageIClassListMenu}    timeout=60    error=Erro ao efetuar o login
     Sleep    2
 
-Nova sessao    ${hospital}
+Nova sessao    
+    [Arguments]     ${hospital}
     Log    *** Teste QA Environment: ${URL_AMBIENTE}
     Log    *** Teste no Sistema Operacional: ${so}
     Log To Console    *** Teste no Sistema Operacional: ${so}
