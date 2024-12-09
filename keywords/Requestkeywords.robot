@@ -45,7 +45,7 @@ Connection
     RETURN    ${token}
 
 Document
-    [Arguments]    ${token}      ${cdAtendimento}    ${nrConta}    ${pathMain}
+    [Arguments]    ${token}      ${cdAtendimento}    ${nrConta}    ${pathMain}    ${empresa}
     Log To Console    Request Document
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\document.json
     ${uuid}    Evaluate    uuid.uuid4()    modules=uuid
@@ -53,6 +53,12 @@ Document
     ${body_json}    Update value to JSON    ${body_json}    $..name      ${name}
     ${body_json}    Update value to JSON    ${body_json}    $..field2    ${cdAtendimento}
     ${body_json}    Update value to JSON    ${body_json}    $..field5    ${nrConta}
+
+    IF    ${empresa} == 2
+        ${body_json}    Update value to JSON    ${body_json}    $..locationId      321Z621_026GG6331006TB6
+        ${body_json}    Update value to JSON    ${body_json}    $..drawer           DSHAV_SAME
+        ${body_json}    Update value to JSON    ${body_json}    $..documentType     RELATORIO DE CONTA_DSHAV
+    END
 
     Log    ${body_json}
 
@@ -104,11 +110,16 @@ Page
 
 
 WorkflowItem
-    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}    ${tela}
+    [Arguments]    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${nomePDF}    ${pathCSV}    ${tela}    ${empresa}
     Log To Console    Request WorkFlow
     
     ${body_json}    Load JSON from file    ${pathMain}\\resources\\work.json
     ${body_json}    Update value to JSON    ${body_json}    $..objectId      ${document}
+
+     IF    ${empresa} == 2
+        ${body_json}    Update value to JSON    ${body_json}    $..workflowQueueId      321Z8BP_026ZT1PYS00N2VY
+    END
+
 
     Log    ${body_json}
 
@@ -139,13 +150,13 @@ WorkflowItem
 
 
 Integração WebService
-    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}    ${tela}
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${pathMain}    ${pathCSV}    ${tela}    ${empresa}
 
     TRY
         # Conecta web service
         ${token}    Connection
         # Cria document JSON
-        ${document}    Document    ${token}    ${cdAtendimento}    ${nrConta}    ${pathMain}
+        ${document}    Document    ${token}    ${cdAtendimento}    ${nrConta}    ${pathMain}    ${empresa}
 
         ${date}    Get Current Date    result_format=%d-%m-%Y-%H:%M:%S
 
@@ -155,7 +166,7 @@ Integração WebService
         # Envia arquivo web service
         ${response}    Page    ${document}    ${token}    ${fileName}    ${pathMain}
 
-        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}    ${pathCSV}    ${tela}
+        WorkflowItem    ${document}    ${token}    ${pathMain}    ${cdAtendimento}    ${nrConta}    ${fileName}    ${pathCSV}    ${tela}    ${empresa}
 
     EXCEPT
         Log     Falha ao integrar Green

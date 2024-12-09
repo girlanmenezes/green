@@ -98,7 +98,7 @@ Atualizar results
 
 
 Busca Atendimento
-    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}  
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}    ${empresa}  
     TRY
         ${token}=    Connection Token
 
@@ -119,6 +119,7 @@ Busca Atendimento
         ...    tela=${tela}
         ...    status=pending
         ...    dataExecucao=${date}
+        ...    empresa=${empresa}
 
 
             
@@ -142,7 +143,7 @@ Busca Atendimento
 
 
 Atualiza Atendimento
-    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}     ${status} 
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}     ${status}     ${empresa}
     TRY
         ${token}=    Connection Token
 
@@ -163,6 +164,7 @@ Atualiza Atendimento
         ...    tela=${tela}
         ...    status=${status} 
         ...    dataExecucao=${date}
+        ...    empresa=${empresa}
 
 
             
