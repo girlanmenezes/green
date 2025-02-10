@@ -549,6 +549,7 @@ Get Value nrConta
     [Arguments]    	${i}
     TRY
         ${nrContaSistema}   RPA.Browser.Selenium.Get Text    //*[@id="grdRegFat"]/div[4]/div[3]/div/div[${i}]/div[1]/div
+         Run Keyword And Ignore Error    Click Alert    ${BotaoAlertaNao} 
         RETURN    ${nrContaSistema}
     EXCEPT
         Log To Console     Não Existe Conta
