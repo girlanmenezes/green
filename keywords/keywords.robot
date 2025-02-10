@@ -49,8 +49,6 @@ ${options}                           binary_location="C:\\Program Files\\Google\
 #${dadosLoginUsuarioQaRelease}       TIRPAWATI
 #${dadosLoginSenhaQaRelease}         TIRPAWATI
 
-${dadosLoginEmpresaQaRelease}       HOSPITAL NOVE DE JULHO
-
 #${dadosLoginEmpresaQaRelease}       HML - HOSPITAL NOVE DE JULHO
 #child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
 
@@ -92,13 +90,13 @@ ${Notifications}                xpath=//*[@id='notifications']
 
 *** Keywords ***
 Logar e Acessar a tela
-    [Arguments]    ${tela}    ${nomeItem}
+    [Arguments]    ${tela}    ${nomeItem}    ${hospital}
     TRY
         Kill Process    chrome.exe
         Kill Process    chrome-custom.exe
 
         Sleep     5s
-        Nova sessao
+        Nova sessao    ${hospital}
         Acessar a tela pela busca |${tela}||${nomeItem}|
     EXCEPT
         Skip    Sistema Indisponivel
@@ -388,7 +386,8 @@ Realiza Login
     Wait Until Element Is Visible    ${PageIClassListMenu}    timeout=60    error=Erro ao efetuar o login
     Sleep    2
 
-Nova sessao
+Nova sessao    
+    [Arguments]     ${hospital}
     Log    *** Teste QA Environment: ${URL_AMBIENTE}
     Log    *** Teste no Sistema Operacional: ${so}
     Log To Console    *** Teste no Sistema Operacional: ${so}
@@ -402,7 +401,7 @@ Nova sessao
     Sleep    5s
     Log To Console     ABERTURA DO NAVEGADOR
 
-    Realiza Login    ${USER}    ${SENHA}    ${dadosLoginEmpresaQaRelease}
+    Realiza Login    ${USER}    ${SENHA}    ${hospital}
 
 Criar Lista Itens Menu Xpath com Index
     [Arguments]    @{listaItensMenu}
