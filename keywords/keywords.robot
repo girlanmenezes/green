@@ -40,8 +40,8 @@ ${nrContaSistema}
 #${options}                           binary_location="C:\\Program Files\\Google\\GoogleChromePortable\\Chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
 #centos
 #${options}                           binary_location="C:\\CentBrowser\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222")
-#Chrome
-${options}                           binary_location="C:\\chrome-win64\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222");add_argument("--ignore-certificate-errors");add_argument("--ignore-ssl-errors");add_argument("--ignore-certificate-errors-spki-list");add_argument("--allow-running-insecure-content");add_argument("--disable-web-security");add_argument("--disable-features=VizDisplayCompositor")
+#Chrome - Configuração para permitir sites HTTP (não HTTPS)
+${options}                           binary_location="C:\\chrome-win64\\chrome.exe";add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox");add_argument("--start-maximized");add_argument("remote-debugging-port=9222");add_argument("--allow-running-insecure-content");add_argument("--disable-web-security");add_argument("--disable-features=VizDisplayCompositor");add_argument("--disable-extensions");add_argument("--disable-plugins");add_argument("--disable-default-apps");add_argument("--disable-popup-blocking");add_argument("--disable-translate");add_argument("--disable-logging");add_argument("--disable-gpu-logging");add_argument("--silent");add_argument("--log-level=3");add_argument("--disable-blink-features=AutomationControlled");add_argument("--allow-insecure-localhost");add_argument("--disable-features=TranslateUI");add_argument("--disable-ipc-flooding-protection");add_experimental_option("excludeSwitches", ["enable-automation"]);add_experimental_option('useAutomationExtension', False)
 
 #${dadosLoginUsuarioQaRelease}       RPA_CONTA
 #${dadosLoginSenhaQaRelease}         12345678
@@ -396,6 +396,16 @@ Nova sessao
     Maximize Browser Window
     Sleep    5s
     Log To Console     ABERTURA DO NAVEGADOR
+    
+    # Permite sites HTTP e desativa avisos de segurança
+    TRY
+        Execute Javascript    window.addEventListener('beforeunload', function(e) { e.preventDefault(); e.returnValue = ''; });
+        Execute Javascript    if (window.location.protocol === 'https:' && window.location.hostname !== 'localhost') { window.location.href = window.location.href.replace('https:', 'http:'); }
+        Execute Javascript    document.addEventListener('DOMContentLoaded', function() { console.log('Site HTTP carregado com sucesso'); });
+        Log To Console    Configuração para sites HTTP aplicada
+    EXCEPT
+        Log To Console    Erro ao configurar para sites HTTP - continuando
+    END
     
     # Adiciona cookies após navegar para a URL
     TRY
