@@ -393,13 +393,20 @@ Nova sessao
     Log To Console    *** Teste no Sistema Operacional: ${so}
 
     Open Browser    ${URL_AMBIENTE}   ${browser}    options=${options}
-    #Add Cookie    las-uuid    2a603126-6068-4cfb-a00f-b79d6a7adc6d
-    Add Cookie    las-uuid    6491a899-2e53-4484-a0d3-76bf432bcd70
-    Add Cookie    las-host    http://127.0.0.1:32768
-    #Add Cookie    las-host    http://127.0.0.1:32785
     Maximize Browser Window
     Sleep    5s
     Log To Console     ABERTURA DO NAVEGADOR
+    
+    # Adiciona cookies após navegar para a URL
+    TRY
+        #Add Cookie    las-uuid    2a603126-6068-4cfb-a00f-b79d6a7adc6d
+        Add Cookie    las-uuid    6491a899-2e53-4484-a0d3-76bf432bcd70
+        Add Cookie    las-host    http://127.0.0.1:32768
+        #Add Cookie    las-host    http://127.0.0.1:32785
+        Log To Console    Cookies adicionados com sucesso
+    EXCEPT
+        Log To Console    Erro ao adicionar cookies - continuando sem cookies
+    END
 
     Realiza Login    ${USER}    ${SENHA}    ${hospital}
 
