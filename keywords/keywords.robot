@@ -11,7 +11,6 @@ Library             RPA.HTTP
 Library             RPA.FileSystem
 Library             OperatingSystem
 Library             Processwindows
-Library             ChromeDriverManager
 
 
 *** Variables ***
@@ -387,27 +386,11 @@ Realiza Login
     Wait Until Element Is Visible    ${PageIClassListMenu}    timeout=60    error=Erro ao efetuar o login
     Sleep    2
 
-Verificar Compatibilidade ChromeDriver
-    Log To Console    Verificando compatibilidade entre Chrome e ChromeDriver...
-    TRY
-        ${result}    Ensure Compatible Chromedriver
-        IF    ${result} == ${True}
-            Log To Console    ChromeDriver compatível verificado com sucesso!
-        ELSE
-            Log To Console    Aviso: Não foi possível verificar compatibilidade do ChromeDriver
-        END
-    EXCEPT
-        Log To Console    Erro ao verificar compatibilidade - continuando com versão atual
-    END
-
 Nova sessao    
     [Arguments]     ${hospital}
     Log    *** Teste QA Environment: ${URL_AMBIENTE}
     Log    *** Teste no Sistema Operacional: ${so}
     Log To Console    *** Teste no Sistema Operacional: ${so}
-
-    # Verifica compatibilidade do ChromeDriver antes de abrir o navegador
-    Verificar Compatibilidade ChromeDriver
 
     Open Browser    ${URL_AMBIENTE}   ${browser}    options=${options}
     Maximize Browser Window
