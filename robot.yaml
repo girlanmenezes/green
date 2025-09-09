@@ -25,6 +25,8 @@ artifactsDir: output
 
 PATH:
   - .
+  - C:\Program Files\Google\Chrome\Application
+  - C:\chrome-win64
 PYTHONPATH:
   - keywords
   - resources
