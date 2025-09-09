@@ -70,8 +70,16 @@ class ChromeDriverManager:
     def get_compatible_chromedriver_version(self, chrome_version):
         """Obtém a versão do chromedriver compatível com o Chrome"""
         try:
-            # Extrai a versão principal do Chrome (ex: 139.0.7258.155 -> 139)
+            print(f"Buscando ChromeDriver compatível com Chrome {chrome_version}...")
+            
+            # Primeiro, tenta encontrar a versão exata
+            exact_version = self._try_exact_version(chrome_version)
+            if exact_version:
+                return exact_version
+            
+            # Se não encontrar a versão exata, busca por versão principal
             major_version = chrome_version.split('.')[0]
+            print(f"Versão exata não encontrada, buscando por versão principal {major_version}...")
             
             # API do Chrome for Testing para obter versões disponíveis
             url = f"https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
@@ -95,12 +103,32 @@ class ChromeDriverManager:
             
             if compatible_versions:
                 # Retorna a versão mais recente
-                return max(compatible_versions, key=lambda x: [int(i) for i in x.split('.')])
+                latest_version = max(compatible_versions, key=lambda x: [int(i) for i in x.split('.')])
+                print(f"Versão compatível encontrada: {latest_version}")
+                return latest_version
             
+            print(f"Nenhuma versão compatível encontrada para Chrome {chrome_version}")
             return None
             
         except Exception as e:
             print(f"Erro ao obter versão do chromedriver: {e}")
+            return None
+    
+    def _try_exact_version(self, chrome_version):
+        """Tenta encontrar a versão exata do ChromeDriver"""
+        try:
+            # URL para versão específica
+            url = f"https://storage.googleapis.com/chrome-for-testing-public/{chrome_version}/win64/chromedriver-win64.zip"
+            
+            # Testa se a URL existe
+            response = requests.head(url, timeout=10)
+            if response.status_code == 200:
+                print(f"Versão exata encontrada: {chrome_version}")
+                return chrome_version
+            
+            return None
+            
+        except Exception:
             return None
     
     def download_chromedriver(self, version):
