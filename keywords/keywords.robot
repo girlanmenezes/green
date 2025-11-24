@@ -55,7 +55,8 @@ ${options}                           binary_location="C:\\Program Files\\Google\
 #HML
 #${IdIframe}                            id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
 #PROD
-${IdIframe}                              id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
+#${IdIframe}                              id=child_CONEC.HTML,CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,PAGU.HTML,SUPRI.HTML
+${IdIframe}                            id=child_CONTR.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,SUPRI.HTML
 #...                                 id=child_APOIO.HTML,ATEND.HTML,CONTR.HTML,DIAGN.HTML,EXTENSION.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PLANO.HTML,SUPRI.HTML
 #...                                 id=child_APOIO.HTML,ATEND.HTML,CONEC.HTML,CONTR.HTML,DIAGN.HTML,FATUR-CONV.HTML,FATUR-SUS.HTML,FINAN.HTML,GLOBAL.HTML,INTER.HTML,PAGU.HTML,SUPRI.HTML   
 ${IdIframePagu}                     id=child_PAGU.HTML
