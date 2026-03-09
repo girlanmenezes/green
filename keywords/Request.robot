@@ -3,6 +3,7 @@ Documentation       Busca dados RPA
 
 Library             RPA.HTTP
 Library             RPA.JSON
+Library             EmailErrosAtendimento
 
 *** Variable ***
 ${URL_RPA}    http://192.168.57.80
@@ -180,4 +181,36 @@ Atualiza Atendimento
 
     EXCEPT
         Log    Atualização do atendimento: ${cdAtendimento} não realizada    console=True
+    END
+
+
+Atualiza Atendimento Com Erro
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}    ${empresa}    ${motivo}=Erro na execução
+    Registrar Atendimento Erro    ${cdAtendimento}    ${nrConta}    ${tela}    ${empresa}    ${motivo}
+    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    ${tela}    error    ${empresa}
+
+
+Registrar Atendimento Erro
+    [Arguments]    ${cdAtendimento}    ${nrConta}    ${tela}    ${empresa}    ${motivo}=
+    EmailErrosAtendimento.Registrar Atendimento Erro    ${cdAtendimento}    ${nrConta}    ${tela}    ${empresa}    ${motivo}
+
+
+Enviar Email Atendimentos Com Erro
+    [Arguments]    ${destinatarios}=    ${smtp_server}=    ${smtp_port}=    ${smtp_user}=    ${smtp_senha}=    ${remetente}=
+    ${qtd}    EmailErrosAtendimento.Obter Quantidade Erros
+    IF    ${qtd} == 0
+        Log    Nenhum atendimento com erro para enviar por email.    console=True
+        RETURN
+    END
+    TRY
+        EmailErrosAtendimento.Enviar Email Atendimentos Erro
+        ...    destinatarios=${destinatarios}
+        ...    smtp_server=${smtp_server}
+        ...    smtp_port=${smtp_port}
+        ...    smtp_user=${smtp_user}
+        ...    smtp_senha=${smtp_senha}
+        ...    remetente=${remetente}
+        Log    Email com ${qtd} atendimento(s) com erro enviado com sucesso.    console=True
+    EXCEPT    AS    ${msg}
+        Log    Falha ao enviar email de atendimentos com erro: ${msg}    console=True
     END

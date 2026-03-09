@@ -7,11 +7,22 @@ Library             DB
 Resource            Keywords.robot
 Resource            Requestkeywords.robot
 Resource            Request.robot
+Suite Teardown      Enviar Email Atendimentos Com Erro    ${EMAIL_DESTINATARIOS}    ${SMTP_SERVER}    ${SMTP_PORT}    ${SMTP_USER}    ${SMTP_SENHA}    ${EMAIL_REMETENTE}
+
 *** Variables ***
 ${pathMain}         C:\\workspace\\green    # Path raiz do projeto
 ${pathCSV}          C:\\workspace\\green\\resources\\CSV\\RELATORIO_ENVIOS.csv
 ${pathCSVat}        C:\\workspace\\green\\resources\\CSV\\RELATORIO_ATENDIMENTO_ENVIOS.csv
 ${pathPDF}          C:\\workspace\\green\\resources\\PDF
+
+# Configuração do email para relatório de atendimentos com erro
+# Servidor webmail cPanel (webmail.wati.com.br): usar mail.wati.com.br
+${SMTP_SERVER}      mail.wati.com.br
+${SMTP_PORT}        587
+${SMTP_USER}        girlan.menezes@wati.com.br
+${SMTP_SENHA}       sucessowati
+${EMAIL_REMETENTE}  girlan.menezes@wati.com.br
+${EMAIL_DESTINATARIOS}    girlanmenezes@gmail.com
 
 *** Tasks ***
 RPA Green
@@ -56,7 +67,7 @@ RPA Green
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento conta    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD" 
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error    1  
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_HOS    1  
             CONTINUE
         END
         
@@ -64,7 +75,7 @@ RPA Green
         ${statusBuscaGrid}=    Buscar Conta no Grid    ${nrConta}
        
         IF    "${statusBuscaGrid}"=="FAILD" 
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error    1   
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_HOS    1   
             CONTINUE
         END
 
@@ -73,7 +84,7 @@ RPA Green
         Log    ${statusDownload}
 
         IF    "${statusDownload}"=="FAILD" 
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error    1   
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_HOS    1   
             CONTINUE
         END
 
@@ -128,7 +139,7 @@ RPA Green Atendimento
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD"    
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error    1  
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_AMB    1  
             CONTINUE
         END
         
@@ -137,7 +148,7 @@ RPA Green Atendimento
         Log    ${statusDownload}
 
         IF    "${statusDownload}"=="FAILD"    
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error    1 
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_AMB    1 
             CONTINUE
         END
 
@@ -196,7 +207,7 @@ RPA Green ALPHAVILLE HOSPITAL NOVE DE JULHO
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento conta    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD" 
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error    2   
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_HOS    2   
             CONTINUE
         END
         
@@ -204,7 +215,7 @@ RPA Green ALPHAVILLE HOSPITAL NOVE DE JULHO
         ${statusBuscaGrid}=    Buscar Conta no Grid    ${nrConta}
        
         IF    "${statusBuscaGrid}"=="FAILD" 
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error    2   
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_HOS    2   
             CONTINUE
         END
 
@@ -213,7 +224,7 @@ RPA Green ALPHAVILLE HOSPITAL NOVE DE JULHO
         Log    ${statusDownload}
 
         IF    "${statusDownload}"=="FAILD" 
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_HOS     error    2   
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_HOS    2   
             CONTINUE
         END
 
@@ -268,7 +279,7 @@ RPA Green Atendimento ALPHAVILLE HOSPITAL NOVE DE JULHO
         ${statusPesquisaAtendimeto}=    Pesquisa Atendimento    ${cdAtendimento} 
 
         IF    "${statusPesquisaAtendimeto}"=="FAILD"    
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error    2  
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_AMB    2  
             CONTINUE
         END
         
@@ -277,7 +288,7 @@ RPA Green Atendimento ALPHAVILLE HOSPITAL NOVE DE JULHO
         Log    ${statusDownload}
 
         IF    "${statusDownload}"=="FAILD"    
-            Run Keyword And Ignore Error    Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    M_LAN_AMB      error    2 
+            Run Keyword And Ignore Error    Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    M_LAN_AMB    2 
             CONTINUE
         END
 

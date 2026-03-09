@@ -143,7 +143,7 @@ WorkflowItem
         Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    ${tela}     success    ${empresa} 
         Log    Integração foi realizada com atendiment: ${cdAtendimento} : ${body_json}    console=True
     ELSE
-        Atualiza Atendimento    ${cdAtendimento}    ${nrConta}    ${tela}     error    ${empresa}
+        Atualiza Atendimento Com Erro    ${cdAtendimento}    ${nrConta}    ${tela}    ${empresa}    Falha na integração WebService
         Log    Integração não foi realizada com atendiment: ${cdAtendimento}    console=True
     END
 
