@@ -18,9 +18,9 @@ ${pathPDF}          C:\\workspace\\green\\resources\\PDF
 # Configuração do email para relatório de atendimentos com erro
 # Servidor webmail cPanel (webmail.wati.com.br): usar mail.wati.com.br
 ${SMTP_SERVER}      mail.wati.com.br
-${SMTP_PORT}        587
+${SMTP_PORT}        465
 ${SMTP_USER}        girlan.menezes@wati.com.br
-${SMTP_SENHA}       sucessowati
+${SMTP_SENHA}      sucessowati}
 ${EMAIL_REMETENTE}  girlan.menezes@wati.com.br
 ${EMAIL_DESTINATARIOS}    girlanmenezes@gmail.com
 
