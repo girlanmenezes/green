@@ -31,6 +31,8 @@ RPA Green
         Skip    Erro ao consultar RPA.
     END
     ${results}        Get Conta Banco    ${DIAS_RETROATIVOS}    1     #Busca os dados no banco #PASSAR PARAMETRO DA EMPRESA
+
+    Log    ${results}    console=True
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
@@ -106,6 +108,7 @@ RPA Green Atendimento
     END
 
     ${results}        Get Atendimento Banco    ${DIAS_RETROATIVOS}    1    #Busca os dados no banco
+    Log    ${results}    console=True
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
@@ -171,6 +174,7 @@ RPA Green ALPHAVILLE HOSPITAL NOVE DE JULHO
         Skip    Erro ao consultar RPA.
     END
     ${results}        Get Conta Banco    ${DIAS_RETROATIVOS}    2     #Busca os dados no banco #PASSAR PARAMETRO DA EMPRESA
+    Log    ${results}    console=True
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
@@ -246,6 +250,7 @@ RPA Green Atendimento ALPHAVILLE HOSPITAL NOVE DE JULHO
     END
 
     ${results}        Get Atendimento Banco    ${DIAS_RETROATIVOS}    2    #Busca os dados no banco
+    Log    ${results}    console=True
  
     IF    "${results}"=="False"
         Skip    Consulta nao retornou dados.
